@@ -1,0 +1,63 @@
+# RxSaver AI Agent Rules
+
+When working on this project (frontend, React, UI/UX tasks), you MUST strictly adhere to the following design system rules from the "RxSaver — Tercera Edad Edition" design system.
+
+## 1. Design Philosophy
+- **Mission:** Minimalist, warm, and accessible design for users aged 60+.
+- **Calmness:** NO neons, NO gradients, NO aggressive animations. Color communicates, it does not distract.
+- **Readability First:** Base text size is 17px (not 16px). Minimum contrast 4.5:1.
+- **Generous Spacing:** Minimum 16px padding on cards. Buttons MUST BE at least 48px high.
+- **Warm Minimalism:** Warm linen background, not pure white. Reduces eye strain.
+
+## 2. Color Palette (OKLCH based)
+Use ONLY these exact Tailwind CSS color variables (which map to the OKLCH codes in `app.css`):
+
+### Main Tokens
+- `bg-background`: Warm linen `#F5F2EC`
+- `text-foreground`: Slate dark `#1A1C2E`
+- `bg-primary`: Sky Blue `#3A6FA8` (for primary buttons/brand)
+- `text-primary-foreground`: `#FEFEFE`
+- `bg-savings`: Forest Green `#2E7D52` (for savings/Canada prices)
+- `text-savings-foreground`: `#FEFEFE`
+- `bg-us-price` / `text-us-price`: Brick Red `#B84040` (expensive US prices)
+- `bg-ca-price` / `text-ca-price`: Forest Green `#2E7D52` (cheap Canada prices)
+
+### Surface & Semantic Tokens
+- `bg-card`: Pure white `#FFFFFF` (cards over linen bg)
+- `bg-surface`: Subtle elevated surface
+- `bg-muted`: Soft backgrounds, chips
+- `text-muted-foreground`: Secondary text
+- `border-border`: Visible but soft dividers
+- `bg-secondary`: Very soft sky tint
+
+## 3. Typography
+- **Headings (font-serif):** `Lora` (weights: 400, 600, 700). Warm, humanist serif.
+- **Body / UI (font-sans):** `Source Sans 3` (weights: 400, 600, 700). High legibility.
+- **Base Size:** Default body text MUST be 17px (`text-[17px]`).
+- **Line Height:** Body uses `leading-relaxed` (1.625). Headings use `leading-snug` (1.375).
+
+## 4. Spacing & Borders
+- **Spacing Scale:**
+  - Card internal padding: `p-5` (20px)
+  - List gap: `gap-3` (12px)
+  - Page horizontal margin: `px-4` (16px)
+  - Vertical block separation: `py-6` (24px)
+- **Border Radii (Large & Friendly):**
+  - `--radius`: 18px (`rounded-lg`)
+  - `--radius-xl`: 27px (`rounded-xl`)
+  - `--radius-2xl`: 36px (`rounded-2xl`)
+  - `--radius-3xl`: 45px (`rounded-3xl`)
+
+## 5. Components & Accessibility
+- **Buttons:** Minimum touch target is 48px height (`h-12`).
+- **Cards:** Use `bg-card shadow-sm rounded-2xl p-5`. Highlighted cards get a 4px primary left border.
+- **Icons:** Must always have a text label. Ambiguous icons are bad for seniors. Include `aria-label` when text isn't visually adjacent.
+- **Accessibility:** `lang="es"` in HTML root. Minimum contrast is 4.5:1.
+
+## 6. What NOT To Do (CRITICAL)
+- Do not use gradients.
+- Do not use text smaller than 15px.
+- Do not use pure white `#FFFFFF` for the page background.
+- Do not use fast animations (< 300ms).
+- Do not use icons without text labels.
+- Do not use purple/violet colors.
