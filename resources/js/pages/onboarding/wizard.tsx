@@ -5,6 +5,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { IconShieldCheck, IconPill, IconUserHeart } from '@tabler/icons-react';
 import { Spinner } from '@/components/ui/spinner';
 import { Input } from '@/components/ui/input';
+import { MdLocalPharmacy, MdLocationPin, MdLocalHospital } from 'react-icons/md';
+import { FaPrescriptionBottleAlt, FaRoute } from 'react-icons/fa';
+import { SiWalmart } from 'react-icons/si';
 
 export default function OnboardingWizard() {
     const [step, setStep] = useState(1);
@@ -13,7 +16,7 @@ export default function OnboardingWizard() {
         insurance: '',
         zip_code: '',
         pharmacy: '',
-        radius: '',
+        radius: '20',
         plan: '',
     });
 
@@ -107,8 +110,9 @@ export default function OnboardingWizard() {
 
                     {step === 2 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
-                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
-                                Where are you located?
+                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight flex items-center gap-3">
+                                <MdLocationPin className="text-primary text-5xl shrink-0" />
+                                <div>Where are you located?</div>
                             </h1>
                             <p className="text-lg text-muted-foreground">
                                 Enter your ZIP code so we can find the best pharmacy prices near you.
@@ -147,34 +151,47 @@ export default function OnboardingWizard() {
 
                             <div className="mt-8 space-y-8">
                                 <div>
-                                    <h3 className="text-xl font-semibold mb-3">Preferred Pharmacy</h3>
+                                    <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                                        <MdLocalPharmacy className="text-primary" /> Preferred Pharmacy
+                                    </h3>
                                     <div className="grid grid-cols-2 gap-3">
-                                        {['CVS', 'Walgreens', 'Walmart', 'Local Pharmacy'].map(pharma => (
+                                        {[
+                                            { name: 'CVS', icon: FaPrescriptionBottleAlt },
+                                            { name: 'Walgreens', icon: MdLocalPharmacy },
+                                            { name: 'Walmart', icon: SiWalmart },
+                                            { name: 'Local Pharmacy', icon: MdLocalHospital }
+                                        ].map(pharma => (
                                             <Button
-                                                key={pharma}
-                                                variant={answers.pharmacy === pharma ? 'default' : 'outline'}
-                                                className={`h-14 text-lg rounded-xl ${answers.pharmacy === pharma ? 'border-primary' : 'border-border'} hover:border-primary/50`}
-                                                onClick={() => setAnswers({...answers, pharmacy: pharma})}
+                                                key={pharma.name}
+                                                variant={answers.pharmacy === pharma.name ? 'default' : 'outline'}
+                                                className={`h-auto py-4 flex flex-col items-center gap-2 text-lg rounded-xl ${answers.pharmacy === pharma.name ? 'border-primary bg-primary/10 text-primary' : 'border-border text-foreground'} hover:border-primary/50`}
+                                                onClick={() => setAnswers({...answers, pharmacy: pharma.name})}
                                             >
-                                                {pharma}
+                                                <pharma.icon size={28} />
+                                                <span className="text-base font-semibold">{pharma.name}</span>
                                             </Button>
                                         ))}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-xl font-semibold mb-3">Maximum Distance</h3>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {['5 miles', '10 miles', '20+ miles'].map(rad => (
-                                            <Button
-                                                key={rad}
-                                                variant={answers.radius === rad ? 'default' : 'outline'}
-                                                className={`h-14 text-lg rounded-xl ${answers.radius === rad ? 'border-primary' : 'border-border'} hover:border-primary/50`}
-                                                onClick={() => setAnswers({...answers, radius: rad})}
-                                            >
-                                                {rad}
-                                            </Button>
-                                        ))}
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                                            <FaRoute className="text-primary" /> Maximum Distance
+                                        </h3>
+                                        <span className="text-xl font-bold text-primary">{answers.radius} miles</span>
+                                    </div>
+                                    <input 
+                                        type="range" 
+                                        min="1" 
+                                        max="100" 
+                                        value={answers.radius} 
+                                        onChange={(e) => setAnswers({...answers, radius: e.target.value})}
+                                        className="w-full h-3 bg-muted rounded-lg appearance-none cursor-pointer accent-primary" 
+                                    />
+                                    <div className="flex justify-between text-sm text-muted-foreground mt-2 font-medium">
+                                        <span>1 mi</span>
+                                        <span>100 mi</span>
                                     </div>
                                 </div>
 
@@ -198,7 +215,7 @@ export default function OnboardingWizard() {
                                 Select the RxSaver plan that best fits your needs. You can change this anytime.
                             </p>
 
-                            <div className="grid gap-4 mt-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
                                 <Card className="relative overflow-hidden rounded-2xl border-border hover:border-primary transition-colors cursor-pointer shadow-sm" onClick={() => handleNext('plan', 'free')}>
                                     <CardContent className="p-6">
                                         <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Basic Free</h3>

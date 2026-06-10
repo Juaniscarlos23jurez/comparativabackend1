@@ -39,6 +39,8 @@ class OnboardingController extends Controller
         
         $user->update([
             'profile_data' => $request->profile_data,
+            'zip_code' => $request->profile_data['zip_code'],
+            'radius' => $request->profile_data['radius'],
             'onboarding_completed' => true,
         ]);
 
