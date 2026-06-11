@@ -6,6 +6,20 @@ Route::inertia('/', 'welcome')->name('home');
 
 Route::post('/auth/social-login', [\App\Http\Controllers\FirebaseAuthController::class, 'login'])->name('social.login');
 
+Route::get('/api/drugs/search', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
+    $query = $request->query('q');
+    return response()->json($needyMedsService->searchDrugName($query));
+});
+
+Route::post('/api/drugs/pharmacies', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
+    $exactDrugName = $request->input('drugName');
+    $userZip = $request->input('zip_code') ?? (auth()->check() ? auth()->user()->zip_code : '88595');
+    $userRadius = $request->input('radius') ?? (auth()->check() ? auth()->user()->radius : '42');
+    $quantity = $request->input('quantity', '1');
+
+    return response()->json($needyMedsService->getPharmacyPrices($exactDrugName, $userZip, $userRadius, $quantity));
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'show'])->name('onboarding');
     Route::post('/onboarding', [\App\Http\Controllers\OnboardingController::class, 'store']);
@@ -85,20 +99,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::redirect('/savings', '/optimizer');
     Route::redirect('/pharmacies', '/optimizer');
-
-    Route::get('/api/drugs/search', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
-        $query = $request->query('q');
-        return response()->json($needyMedsService->searchDrugName($query));
-    });
-
-    Route::post('/api/drugs/pharmacies', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
-        $exactDrugName = $request->input('drugName');
-        $userZip = auth()->user()->zip_code ?? '88595';
-        $userRadius = auth()->user()->radius ?? '42';
-        $quantity = $request->input('quantity', '1'); // Default to 1 or pass it from frontend
-
-        return response()->json($needyMedsService->getPharmacyPrices($exactDrugName, $userZip, $userRadius, $quantity));
-    });
 
     Route::get('/api/drugs/pharmacy-history', function (\Illuminate\Http\Request $request) {
         $npi = $request->query('npi');

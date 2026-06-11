@@ -13,7 +13,7 @@
         'Inter', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
-    
+
     --font-serif:
         'Outfit', ui-sans-serif, system-ui, sans-serif;
 
@@ -52,7 +52,7 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
-    /* RxSaver Specific Tokens */
+    /* MedPrice Specific Tokens */
     --color-savings: var(--savings);
     --color-savings-foreground: var(--savings-foreground);
     --color-us-price: var(--us-price);
@@ -95,7 +95,7 @@
     --border: oklch(0.90 0.01 240);
     --input: oklch(0.90 0.01 240);
     --ring: oklch(0.24 0.08 253);
-    
+
     --savings: oklch(0.43 0.12 150);
     --savings-foreground: oklch(0.99 0 0);
     --us-price: oklch(0.50 0.17 24);
@@ -107,8 +107,9 @@
     --chart-3: oklch(0.398 0.07 227.392);
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
-    --radius: 1.125rem; /* 18px */
-    
+    --radius: 1.125rem;
+    /* 18px */
+
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);
@@ -141,7 +142,7 @@
     --border: oklch(0.269 0 0);
     --input: oklch(0.269 0 0);
     --ring: oklch(0.439 0 0);
-    
+
     --savings: oklch(0.43 0.12 150);
     --savings-foreground: oklch(0.99 0 0);
     --us-price: oklch(0.50 0.17 24);
@@ -153,7 +154,7 @@
     --chart-3: oklch(0.769 0.188 70.08);
     --chart-4: oklch(0.627 0.265 303.9);
     --chart-5: oklch(0.645 0.246 16.439);
-    
+
     --sidebar: oklch(0.205 0 0);
     --sidebar-foreground: oklch(0.985 0 0);
     --sidebar-primary: oklch(0.985 0 0);

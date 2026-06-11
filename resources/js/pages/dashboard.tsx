@@ -341,7 +341,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-6 h-6" />
                     <Input
                         type="text"
-                        placeholder="Search for medication (e.g. Ozempic, Lisinopril)..."
+                        placeholder="Search for medication (e.g. Lisinopril)..."
                         className="w-full h-16 pl-14 pr-32 text-xl rounded-full shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
                         value={searchQuery}
                         onChange={(e) => {
@@ -844,7 +844,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                     <Bell className="w-5 h-5 text-primary" />
                                     Set Price Alert
                                 </h3>
-                                <button 
+                                <button
                                     onClick={() => setIsAlarmModalOpen(false)}
                                     className="text-muted-foreground hover:text-foreground transition-colors text-sm font-semibold"
                                 >
@@ -872,14 +872,14 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                 </div>
                             </div>
                             <div className="mt-6 flex justify-end gap-3">
-                                <Button 
-                                    variant="ghost" 
+                                <Button
+                                    variant="ghost"
                                     onClick={() => setIsAlarmModalOpen(false)}
                                     className="rounded-full text-xs font-semibold px-4 py-2 hover:bg-muted"
                                 >
                                     Cancel
                                 </Button>
-                                <Button 
+                                <Button
                                     onClick={handleSaveAlarmFromModal}
                                     className="rounded-full bg-primary text-white font-bold text-xs px-5 py-2 shadow-sm"
                                 >

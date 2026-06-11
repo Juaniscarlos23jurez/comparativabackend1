@@ -41,12 +41,12 @@ export default function OnboardingWizard() {
 
     return (
         <>
-            <Head title="Welcome to RxSaver" />
+            <Head title="Welcome to MedPrice" />
 
             <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col">
                 <header className="bg-card border-b border-border px-4 py-4 shadow-sm flex items-center gap-2">
                     <IconShieldCheck size={32} className="text-primary" />
-                    <span className="text-2xl font-serif font-bold tracking-tight text-primary">RxSaver</span>
+                    <span className="text-2xl font-serif font-bold tracking-tight text-primary">MedPrice</span>
                 </header>
 
                 <main className="flex-1 max-w-xl mx-auto w-full px-4 py-12 md:py-24">
@@ -72,8 +72,8 @@ export default function OnboardingWizard() {
                             </p>
 
                             <div className="grid gap-4 mt-8">
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="h-auto p-5 justify-start text-left text-lg font-semibold rounded-2xl border-border whitespace-normal hover:bg-muted"
                                     onClick={() => handleNext('insurance', 'uninsured')}
                                 >
@@ -83,8 +83,8 @@ export default function OnboardingWizard() {
                                     I don't have health insurance (or pay out of pocket)
                                 </Button>
 
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="h-auto p-5 justify-start text-left text-lg font-semibold rounded-2xl border-border whitespace-normal hover:bg-muted"
                                     onClick={() => handleNext('insurance', 'high_copay')}
                                 >
@@ -94,8 +94,8 @@ export default function OnboardingWizard() {
                                     I have insurance, but my copays are too high
                                 </Button>
 
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="h-auto p-5 justify-start text-left text-lg font-semibold rounded-2xl border-border whitespace-normal hover:bg-muted"
                                     onClick={() => handleNext('insurance', 'medicare')}
                                 >
@@ -119,17 +119,17 @@ export default function OnboardingWizard() {
                             </p>
 
                             <div className="mt-8 space-y-4">
-                                <Input 
-                                    type="text" 
-                                    placeholder="e.g. 90210" 
+                                <Input
+                                    type="text"
+                                    placeholder="e.g. 90210"
                                     className="h-16 text-xl rounded-2xl px-6 bg-card border-border shadow-sm focus-visible:ring-primary"
                                     value={answers.zip_code}
-                                    onChange={(e) => setAnswers({...answers, zip_code: e.target.value.replace(/\D/g, '').slice(0, 5)})}
+                                    onChange={(e) => setAnswers({ ...answers, zip_code: e.target.value.replace(/\D/g, '').slice(0, 5) })}
                                     disabled={loading}
                                     maxLength={5}
                                 />
-                                
-                                <Button 
+
+                                <Button
                                     className="w-full h-16 text-xl font-semibold rounded-2xl bg-primary text-primary-foreground mt-4 hover:bg-primary/90"
                                     onClick={() => handleNext('zip_code', answers.zip_code)}
                                     disabled={loading || !answers.zip_code || answers.zip_code.length < 5}
@@ -165,7 +165,7 @@ export default function OnboardingWizard() {
                                                 key={pharma.name}
                                                 variant={answers.pharmacy === pharma.name ? 'default' : 'outline'}
                                                 className={`h-auto py-4 flex flex-col items-center gap-2 text-lg rounded-xl ${answers.pharmacy === pharma.name ? 'border-primary bg-primary/10 text-primary' : 'border-border text-foreground'} hover:border-primary/50`}
-                                                onClick={() => setAnswers({...answers, pharmacy: pharma.name})}
+                                                onClick={() => setAnswers({ ...answers, pharmacy: pharma.name })}
                                             >
                                                 <pharma.icon size={28} />
                                                 <span className="text-base font-semibold">{pharma.name}</span>
@@ -181,13 +181,13 @@ export default function OnboardingWizard() {
                                         </h3>
                                         <span className="text-xl font-bold text-primary">{answers.radius} miles</span>
                                     </div>
-                                    <input 
-                                        type="range" 
-                                        min="1" 
-                                        max="100" 
-                                        value={answers.radius} 
-                                        onChange={(e) => setAnswers({...answers, radius: e.target.value})}
-                                        className="w-full h-3 bg-muted rounded-lg appearance-none cursor-pointer accent-primary" 
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="100"
+                                        value={answers.radius}
+                                        onChange={(e) => setAnswers({ ...answers, radius: e.target.value })}
+                                        className="w-full h-3 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
                                     />
                                     <div className="flex justify-between text-sm text-muted-foreground mt-2 font-medium">
                                         <span>1 mi</span>
@@ -195,7 +195,7 @@ export default function OnboardingWizard() {
                                     </div>
                                 </div>
 
-                                <Button 
+                                <Button
                                     className="w-full h-16 text-xl font-semibold rounded-2xl bg-primary text-primary-foreground mt-8 hover:bg-primary/90"
                                     onClick={() => handleNext('radius', answers.radius)}
                                     disabled={!answers.pharmacy || !answers.radius}
@@ -212,7 +212,7 @@ export default function OnboardingWizard() {
                                 Choose your savings plan
                             </h1>
                             <p className="text-lg text-muted-foreground">
-                                Select the RxSaver plan that best fits your needs. You can change this anytime.
+                                Select the MedPrice plan that best fits your needs. You can change this anytime.
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
@@ -233,7 +233,7 @@ export default function OnboardingWizard() {
                                         Recommended
                                     </div>
                                     <CardContent className="p-6 pt-10">
-                                        <h3 className="text-2xl font-serif font-bold text-primary mb-2">RxSaver+</h3>
+                                        <h3 className="text-2xl font-serif font-bold text-primary mb-2">MedPrice+</h3>
                                         <div className="text-3xl font-bold text-foreground mb-4">$9.99 <span className="text-lg text-muted-foreground font-normal">/month</span></div>
                                         <ul className="space-y-2 text-[17px] text-foreground font-medium">
                                             <li>• Extra 20% off on generic medications</li>
