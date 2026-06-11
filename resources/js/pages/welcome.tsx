@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sparkles, Bell, CreditCard, ArrowRight, Search, Heart, ShieldCheck, MapPin, CheckCircle2, Shuffle, Zap, Pill, Info } from 'lucide-react';
+import { Sparkles, Bell, CreditCard, ArrowRight, Search, Heart, ShieldCheck, MapPin, CheckCircle2, Shuffle, Zap, Pill, Info, Camera, Map, TrendingDown, Trophy, Users, Bot } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Welcome() {
@@ -143,46 +143,79 @@ export default function Welcome() {
                         </div>
                     </section>
 
-                    {/* Features Grid - Borderless blending cards */}
+                    {/* Features Grid - Glassmorphism cards */}
                     <section id="how-it-works" className="space-y-12">
                         <div className="text-center space-y-2">
-                            <h2 className="text-3xl font-serif font-bold text-[#1A1C2E]">Three smart ways to save</h2>
+                            <h2 className="text-3xl font-serif font-bold text-[#1A1C2E]">Premium Features to Maximize Savings</h2>
                             <p className="text-sm text-[#6A6C7D] max-w-lg mx-auto">
-                                Designed especially for seniors. Simple, clear, and fully supported.
+                                We go beyond simple price comparisons. Discover our innovative tools designed to make saving effortless and engaging.
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {/* Feature 1 */}
-                            <div className="bg-transparent rounded-none p-0 space-y-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#3A6FA8]/10 flex items-center justify-center text-[#3A6FA8]">
-                                    <CheckCircle2 className="w-6 h-6" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {/* Feature 1: AI Scanner */}
+                            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group space-y-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3A6FA8] to-[#2A5282] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                                    <Camera className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-lg font-bold text-[#1A1C2E]">1 Stop Option (Convenience)</h3>
+                                <h3 className="text-lg font-bold text-[#1A1C2E]">AI Prescription Scanner</h3>
                                 <p className="text-sm text-[#6A6C7D] leading-relaxed">
-                                    We calculate which local pharmacy chain offers the lowest cumulative price for your entire prescription, saving you extra trips.
+                                    Snap a photo of your prescription or receipt. Our AI instantly extracts the medication details and calculates your potential savings.
                                 </p>
                             </div>
 
-                            {/* Feature 2 */}
-                            <div className="bg-transparent rounded-none p-0 space-y-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#3A6FA8]/15 flex items-center justify-center text-[#3A6FA8]">
-                                    <Shuffle className="w-6 h-6" />
+                            {/* Feature 2: Price Heatmap */}
+                            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group space-y-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3A6FA8] to-[#2A5282] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                                    <Map className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-lg font-bold text-[#1A1C2E]">Balanced Split (Max 2 Stops)</h3>
+                                <h3 className="text-lg font-bold text-[#1A1C2E]">Interactive Price Heatmap</h3>
                                 <p className="text-sm text-[#6A6C7D] leading-relaxed">
-                                    We split your recipe across at most two pharmacy brands. Perfect for maximizing savings without complicating your daily logistics.
+                                    Visualize local pharmacy prices on a beautiful interactive map. Easily spot the cheapest options in your neighborhood at a glance.
                                 </p>
                             </div>
 
-                            {/* Feature 3 */}
-                            <div className="bg-transparent rounded-none p-0 space-y-4">
-                                <div className="w-12 h-12 rounded-xl bg-[#3A6FA8]/10 flex items-center justify-center text-[#3A6FA8]">
+                            {/* Feature 3: Price Alerts */}
+                            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group space-y-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3A6FA8] to-[#2A5282] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
                                     <Bell className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-lg font-bold text-[#1A1C2E]">Smart Price Alerts</h3>
                                 <p className="text-sm text-[#6A6C7D] leading-relaxed">
-                                    We monitor prices automatically. If your recurring medication cost falls below your target price, we'll email you.
+                                    Set up alerts like flight trackers. We'll notify you instantly if a coupon value increases or a cheaper generic alternative becomes available.
+                                </p>
+                            </div>
+
+                            {/* Feature 4: Gamification */}
+                            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group space-y-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3A6FA8] to-[#2A5282] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                                    <Trophy className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-lg font-bold text-[#1A1C2E]">Savings Milestones</h3>
+                                <p className="text-sm text-[#6A6C7D] leading-relaxed">
+                                    Turn savings into a rewarding experience. Track your total dollars saved, unlock milestones, and visualize how your savings fund your personal goals.
+                                </p>
+                            </div>
+
+                            {/* Feature 5: Family & Pets */}
+                            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group space-y-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3A6FA8] to-[#2A5282] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                                    <Users className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-lg font-bold text-[#1A1C2E]">Family & Pet Profiles</h3>
+                                <p className="text-sm text-[#6A6C7D] leading-relaxed">
+                                    Manage prescriptions for your entire household in one place. Includes profiles for kids, elderly parents, and even your furry friends.
+                                </p>
+                            </div>
+
+                            {/* Feature 6: AI Assistant */}
+                            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 group space-y-4">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3A6FA8] to-[#2A5282] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                                    <Bot className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-lg font-bold text-[#1A1C2E]">AI Therapy Assistant</h3>
+                                <p className="text-sm text-[#6A6C7D] leading-relaxed">
+                                    Ask our intelligent chatbot about cheaper therapeutic alternatives to discuss with your doctor, empowering you to negotiate better care.
                                 </p>
                             </div>
                         </div>
