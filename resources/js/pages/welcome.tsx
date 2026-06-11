@@ -77,9 +77,9 @@ export default function Welcome() {
                         {/* Hero Illustration */}
                         <div className="lg:col-span-5 flex justify-center">
                             <img
-                                src="/Users/juan/.gemini/antigravity-ide/brain/65fdcb63-164f-4fa1-adfb-d5c130c9b353/landing_hero_illustration_1781138264408.png"
+                                src="/images/realistic_senior_savings.png"
                                 alt="Prescription Optimization Illustration"
-                                className="w-full max-w-[380px] object-contain rounded-2xl"
+                                className="w-full max-w-[420px] object-contain rounded-2xl shadow-sm"
                             />
                         </div>
                     </div>
