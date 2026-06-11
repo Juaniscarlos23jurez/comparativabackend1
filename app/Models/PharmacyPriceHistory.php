@@ -11,6 +11,7 @@ class PharmacyPriceHistory extends Model
         'pharmacy_name',
         'pharmacy_brand',
         'drug_name',
-        'price'
+        'price',
+        'discount_price'
     ];
 }

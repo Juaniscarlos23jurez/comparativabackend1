@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Bell, MapPin, Settings, HelpCircle } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutGrid, Bell, Settings, HelpCircle, Sparkles, User, CreditCard } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -28,18 +28,27 @@ const mainNavItems: NavItem[] = [
         icon: Bell,
     },
     {
-        title: 'Nearby Pharmacies',
-        href: '/pharmacies',
-        icon: MapPin,
+        title: 'Savings Optimizer',
+        href: '/optimizer',
+        icon: Sparkles,
+    },
+];
+
+const settingsNavItems: NavItem[] = [
+    {
+        title: 'Profile',
+        href: '/settings/profile',
+        icon: User,
+    },
+    {
+        title: 'Billing',
+        href: '/settings/billing',
+        icon: CreditCard,
     },
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Settings',
-        href: '/settings/profile',
-        icon: Settings,
-    },
+
     {
         title: 'Help & Support',
         href: '#',
@@ -63,7 +72,8 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems} label="Platform" />
+                <NavMain items={settingsNavItems} label="Settings" />
             </SidebarContent>
 
             <SidebarFooter>

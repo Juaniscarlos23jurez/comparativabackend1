@@ -136,12 +136,13 @@ class NeedyMedsService
                             ->where('drug_name', $exactDrugName)
                             ->count();
 
-                        if ($count < 3) {
+                         if ($count < 3) {
                             // Seed a realistic history
                             for ($i = 5; $i >= 1; $i--) {
                                 $daysAgo = $i * 15;
                                 $factor = 1.0 + (rand(-5, 10) / 100);
                                 $historicalPrice = round($currentPrice * $factor, 2);
+                                $historicalDiscount = round($historicalPrice * 0.85, 2);
 
                                 \App\Models\PharmacyPriceHistory::create([
                                     'npi' => $item['npi'],
@@ -149,6 +150,7 @@ class NeedyMedsService
                                     'pharmacy_brand' => $item['pharmacy'] ?? '',
                                     'drug_name' => $exactDrugName,
                                     'price' => $historicalPrice,
+                                    'discount_price' => $historicalDiscount,
                                     'created_at' => now()->subDays($daysAgo),
                                     'updated_at' => now()->subDays($daysAgo)
                                 ]);
@@ -161,7 +163,8 @@ class NeedyMedsService
                             'pharmacy_name' => $item['name'] ?? '',
                             'pharmacy_brand' => $item['pharmacy'] ?? '',
                             'drug_name' => $exactDrugName,
-                            'price' => $currentPrice
+                            'price' => $currentPrice,
+                            'discount_price' => round($currentPrice * 0.85, 2)
                         ]);
                     }
                 }

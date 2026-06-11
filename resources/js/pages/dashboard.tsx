@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { dashboard } from '@/routes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, TrendingDown, TrendingUp, Filter, BarChart3, Users, DollarSign, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell } from 'lucide-react';
+import { Search, TrendingDown, TrendingUp, Filter, BarChart3, Users, DollarSign, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -33,7 +33,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
     const [apiResults, setApiResults] = useState<{ id: string, name: string, ndc: string }[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
-    
+
     // Compare Modal States
     const [compareResults, setCompareResults] = useState<any[]>([]);
     const [isComparing, setIsComparing] = useState(false);
@@ -48,6 +48,11 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
 
     // Price Alarms
     const [activeAlarms, setActiveAlarms] = useState<string[]>([]);
+    const [alarmsList, setAlarmsList] = useState<any[]>([]);
+
+    // Price Alarm Modal States
+    const [isAlarmModalOpen, setIsAlarmModalOpen] = useState(false);
+    const [alarmModalThreshold, setAlarmModalThreshold] = useState('');
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -90,17 +95,33 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
+                    setAlarmsList(data);
                     setActiveAlarms(data.map((a: any) => a.medication_name));
                 }
             })
             .catch(err => console.error('Error fetching alarms:', err));
     }, []);
 
-    const handleSetAlarm = async () => {
+    const handleOpenAlarmModal = () => {
         if (!comparedDrug) return;
-        const lowestPrice = compareResults.length > 0 
-            ? Math.min(...compareResults.map(p => parseFloat(p.price))) 
-            : null;
+        const alarmObj = alarmsList.find(a => a.medication_name === comparedDrug);
+        if (alarmObj && alarmObj.last_price) {
+            setAlarmModalThreshold(parseFloat(alarmObj.last_price).toFixed(2));
+        } else {
+            const lowestPriceVal = compareResults.length > 0
+                ? Math.min(...compareResults.map(p => parseFloat(p.price)))
+                : null;
+            setAlarmModalThreshold(lowestPriceVal ? lowestPriceVal.toFixed(2) : '');
+        }
+        setIsAlarmModalOpen(true);
+    };
+
+    const handleSaveAlarmFromModal = async () => {
+        const thresholdPrice = parseFloat(alarmModalThreshold);
+        if (isNaN(thresholdPrice) || thresholdPrice <= 0) {
+            alert("Please enter a valid price threshold.");
+            return;
+        }
 
         try {
             const res = await fetch('/api/alarms', {
@@ -109,22 +130,70 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ medication_name: comparedDrug, last_price: lowestPrice })
+                body: JSON.stringify({ medication_name: comparedDrug, last_price: thresholdPrice })
             });
             if (res.ok) {
-                setActiveAlarms([...activeAlarms, comparedDrug]);
-                alert(`Price alert successfully created for ${comparedDrug}! We'll email you when prices drop.`);
+                if (!activeAlarms.includes(comparedDrug)) {
+                    setActiveAlarms([...activeAlarms, comparedDrug]);
+                }
+                // Refresh list
+                const refreshed = await fetch('/api/alarms').then(r => r.json());
+                if (Array.isArray(refreshed)) {
+                    setAlarmsList(refreshed);
+                }
+                setIsAlarmModalOpen(false);
             }
         } catch (err) {
-            console.error('Error creating alarm:', err);
+            console.error('Error creating/updating alarm:', err);
+        }
+    };
+
+    const handleDeleteAlarm = async (id: number, name: string) => {
+        if (!confirm(`Are you sure you want to delete the price alarm for ${name}?`)) return;
+        try {
+            const res = await fetch(`/api/alarms/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            });
+            if (res.ok) {
+                setAlarmsList(alarmsList.filter(a => a.id !== id));
+                setActiveAlarms(activeAlarms.filter(aName => aName !== name));
+            }
+        } catch (err) {
+            console.error('Error removing alarm:', err);
+        }
+    };
+
+    const handleCompareForSaved = async (medicationName: string) => {
+        setSearchQuery(medicationName);
+        setShowDropdown(false);
+        setIsComparing(true);
+        setComparedDrug(medicationName);
+        try {
+            const res = await fetch('/api/drugs/pharmacies', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({ drugName: medicationName, quantity: '1' })
+            });
+            const data = await res.json();
+            setCompareResults(data);
+        } catch (error) {
+            console.error('Error fetching pharmacies:', error);
+        } finally {
+            setIsComparing(false);
         }
     };
 
     const filteredMedications = medicationsList.filter((med) => {
         const query = searchQuery.toLowerCase();
-        return med.name.toLowerCase().includes(query) || 
-               med.generic.toLowerCase().includes(query) || 
-               med.category.toLowerCase().includes(query);
+        return med.name.toLowerCase().includes(query) ||
+            med.generic.toLowerCase().includes(query) ||
+            med.category.toLowerCase().includes(query);
     });
 
     const handlePharmacyClick = async (npi: string) => {
@@ -165,27 +234,31 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                             <AreaChart data={pharmacyHistory} margin={{ top: 10, right: 10, bottom: 5, left: -25 }}>
                                 <defs>
                                     <linearGradient id={`colorPrice-${npi}`} x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#2b73e0" stopOpacity={0.25}/>
-                                        <stop offset="95%" stopColor="#2b73e0" stopOpacity={0.01}/>
+                                        <stop offset="5%" stopColor="#2b73e0" stopOpacity={0.25} />
+                                        <stop offset="95%" stopColor="#2b73e0" stopOpacity={0.01} />
+                                    </linearGradient>
+                                    <linearGradient id={`colorDiscount-${npi}`} x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.01} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(156, 163, 175, 0.15)" />
-                                <XAxis 
-                                    dataKey="date" 
-                                    tickLine={false} 
-                                    axisLine={false} 
-                                    tick={{fill: '#888888', fontSize: 10, fontWeight: 500}} 
+                                <XAxis
+                                    dataKey="date"
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#888888', fontSize: 10, fontWeight: 500 }}
                                     dy={8}
                                 />
-                                <YAxis 
-                                    domain={['auto', 'auto']} 
-                                    tickFormatter={(val) => `$${val}`} 
-                                    tickLine={false} 
-                                    axisLine={false} 
-                                    tick={{fill: '#888888', fontSize: 10, fontWeight: 500}} 
+                                <YAxis
+                                    domain={['auto', 'auto']}
+                                    tickFormatter={(val) => `$${val}`}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#888888', fontSize: 10, fontWeight: 500 }}
                                     dx={-8}
                                 />
-                                <Tooltip 
+                                <Tooltip
                                     contentStyle={{
                                         backgroundColor: 'var(--background)',
                                         borderRadius: '12px',
@@ -195,16 +268,30 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                         padding: '8px 12px'
                                     }}
                                     labelStyle={{ fontWeight: 'bold', color: 'var(--foreground)' }}
-                                    formatter={(value) => [`$${parseFloat(value as string).toFixed(2)}`, 'Price']} 
+                                    formatter={(value, name) => [
+                                        `$${parseFloat(value as string).toFixed(2)}`,
+                                        name === 'price' ? 'Standard Price' : 'Discount Price'
+                                    ]}
                                 />
-                                <Area 
-                                    type="monotone" 
-                                    dataKey="price" 
-                                    stroke="#2b73e0" 
-                                    strokeWidth={3} 
-                                    fillOpacity={1} 
-                                    fill={`url(#colorPrice-${npi})`} 
-                                    activeDot={{r: 5, fill: '#2b73e0', stroke: '#fff', strokeWidth: 2}} 
+                                <Area
+                                    type="monotone"
+                                    name="price"
+                                    dataKey="price"
+                                    stroke="#2b73e0"
+                                    strokeWidth={2.5}
+                                    fillOpacity={1}
+                                    fill={`url(#colorPrice-${npi})`}
+                                    activeDot={{ r: 4, fill: '#2b73e0', stroke: '#fff', strokeWidth: 2 }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    name="discount_price"
+                                    dataKey="discount_price"
+                                    stroke="#10b981"
+                                    strokeWidth={2.5}
+                                    fillOpacity={1}
+                                    fill={`url(#colorDiscount-${npi})`}
+                                    activeDot={{ r: 4, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -226,7 +313,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
         try {
             const res = await fetch('/api/drugs/pharmacies', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
@@ -240,19 +327,21 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
             setIsComparing(false);
         }
     };
+    const alarmObj = alarmsList.find(a => a.medication_name === comparedDrug);
+    const hasActiveAlarm = !!alarmObj;
 
     return (
         <>
             <Head title="Market Overview" />
 
             <div className="flex h-full flex-1 flex-col gap-8 p-4 md:p-8 max-w-7xl mx-auto w-full">
-                
+
                 {/* Search Bar (Hero) */}
                 <div className="relative max-w-3xl mx-auto w-full mb-4" ref={dropdownRef}>
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-6 h-6" />
-                    <Input 
-                        type="text" 
-                        placeholder="Search for medication (e.g. Ozempic, Lisinopril)..." 
+                    <Input
+                        type="text"
+                        placeholder="Search for medication (e.g. Ozempic, Lisinopril)..."
                         className="w-full h-16 pl-14 pr-32 text-xl rounded-full shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
                         value={searchQuery}
                         onChange={(e) => {
@@ -263,11 +352,11 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                             if (apiResults.length > 0) setShowDropdown(true);
                         }}
                     />
-                    <Button 
+                    <Button
                         onClick={handleCompare}
                         className="absolute right-2 top-2 h-12 rounded-full bg-primary px-8 text-lg font-bold transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.25)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
                     >
-                        Compare
+                        Searcher
                     </Button>
 
                     {/* Autocomplete Dropdown */}
@@ -278,8 +367,8 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                             ) : apiResults.length > 0 ? (
                                 <ul className="max-h-64 overflow-y-auto py-2">
                                     {apiResults.map((result) => (
-                                        <li 
-                                            key={result.id} 
+                                        <li
+                                            key={result.id}
                                             className="px-4 py-3 hover:bg-muted/50 cursor-pointer transition-colors flex items-center justify-between"
                                             onClick={() => {
                                                 setSearchQuery(result.name);
@@ -300,9 +389,9 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
 
                 {/* NeedyMeds Drug Discount Card Callout */}
                 <div className="max-w-3xl mx-auto w-full">
-                    <a 
-                        href="https://www.needymeds.org/files/drug-card-print.pdf" 
-                        target="_blank" 
+                    <a
+                        href="https://www.needymeds.org/files/drug-card-print.pdf"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="block bg-card hover:bg-muted/50 border border-border rounded-xl p-4 transition-all duration-200"
                     >
@@ -339,19 +428,18 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                     <Activity className="w-6 h-6 text-primary animate-pulse" />
                                     Pharmacy Prices
                                 </h2>
-                                <p className="text-sm text-muted-foreground mt-1 flex flex-wrap items-center gap-2">
-                                    Comparing prices for <span className="font-bold text-foreground mr-1">{comparedDrug}</span>
+                                <div className="text-sm text-muted-foreground mt-1.5 flex flex-wrap items-center gap-3">
+                                    Comparing prices for <span className="font-extrabold text-foreground text-base tracking-tight ml-1">{comparedDrug}</span>
                                     <Button
                                         variant="outline"
                                         size="xs"
-                                        onClick={handleSetAlarm}
-                                        disabled={activeAlarms.includes(comparedDrug)}
-                                        className={`h-7 px-2.5 rounded-full flex items-center gap-1 text-[11px] font-semibold transition-all duration-200 ${activeAlarms.includes(comparedDrug) ? 'bg-primary/10 border-primary/20 text-primary cursor-default' : 'hover:bg-muted text-muted-foreground hover:text-foreground'}`}
+                                        onClick={handleOpenAlarmModal}
+                                        className={`h-7 px-3 rounded-full flex items-center gap-1.5 text-[11px] font-bold transition-all duration-200 ${hasActiveAlarm ? 'bg-green-600 hover:bg-green-700 text-white border-green-600 shadow-sm' : 'border-primary text-primary hover:bg-primary hover:text-primary-foreground border shadow-sm'}`}
                                     >
-                                        <Bell className={`w-3.5 h-3.5 ${activeAlarms.includes(comparedDrug) ? 'fill-current' : ''}`} />
-                                        {activeAlarms.includes(comparedDrug) ? 'Price Alert Active' : 'Set Price Alert'}
+                                        <Bell className={`w-3.5 h-3.5 ${hasActiveAlarm ? 'fill-current' : ''}`} />
+                                        {hasActiveAlarm ? `Price Alert Active (< $${parseFloat(alarmObj?.last_price || '0').toFixed(0)})` : 'Set Price Alert'}
                                     </Button>
-                                </p>
+                                </div>
                             </div>
                             <div className="flex flex-wrap items-center gap-2">
                                 <Button
@@ -372,9 +460,9 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                     <Percent className="w-4 h-4" />
                                     Est. Discount Price
                                 </Button>
-                                <Button 
-                                    variant="ghost" 
-                                    className="rounded-full w-10 h-10 p-0 text-muted-foreground hover:text-foreground ml-2" 
+                                <Button
+                                    variant="ghost"
+                                    className="rounded-full w-10 h-10 p-0 text-muted-foreground hover:text-foreground ml-2"
                                     onClick={() => {
                                         setComparedDrug('');
                                         setCompareResults([]);
@@ -403,6 +491,99 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                 </div>
                             ) : compareResults.length > 0 ? (
                                 <div className="overflow-x-auto">
+                                    {/* Pharmacy Price Comparison Chart */}
+                                    <div className="p-6 border-b border-border bg-card">
+                                        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-1.5">
+                                            <LineChart className="w-3.5 h-3.5 text-primary" />
+                                            Pharmacy Price Comparison (Lowest Price per Chain)
+                                        </h3>
+                                        <div className="h-44 w-full">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <AreaChart
+                                                    data={(() => {
+                                                        const grouped = compareResults.reduce((acc: Record<string, number>, pharm) => {
+                                                            const brand = pharm.pharmacy || pharm.name || 'Independent';
+                                                            const priceNum = parseFloat(pharm.price);
+                                                            if (!isNaN(priceNum)) {
+                                                                if (acc[brand] === undefined || priceNum < acc[brand]) {
+                                                                    acc[brand] = priceNum;
+                                                                }
+                                                            }
+                                                            return acc;
+                                                        }, {});
+                                                        return Object.entries(grouped).map(([name, price]) => ({
+                                                            name: name.replace(/\s+(PHARMACY|PHAR)/i, '').substring(0, 15),
+                                                            price: price,
+                                                            discountPrice: Math.round(price * 0.85 * 100) / 100
+                                                        }));
+                                                    })()}
+                                                    margin={{ top: 10, right: 10, bottom: 5, left: -20 }}
+                                                >
+                                                    <defs>
+                                                        <linearGradient id="colorComparePrices" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#2b73e0" stopOpacity={0.2} />
+                                                            <stop offset="95%" stopColor="#2b73e0" stopOpacity={0.01} />
+                                                        </linearGradient>
+                                                        <linearGradient id="colorCompareDiscount" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                                                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.01} />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="rgba(156, 163, 175, 0.15)" />
+                                                    <XAxis
+                                                        dataKey="name"
+                                                        tickLine={false}
+                                                        axisLine={false}
+                                                        tick={{ fill: '#888888', fontSize: 10, fontWeight: 500 }}
+                                                        dy={8}
+                                                    />
+                                                    <YAxis
+                                                        domain={['auto', 'auto']}
+                                                        tickFormatter={(val) => `$${val}`}
+                                                        tickLine={false}
+                                                        axisLine={false}
+                                                        tick={{ fill: '#888888', fontSize: 10, fontWeight: 500 }}
+                                                        dx={-8}
+                                                    />
+                                                    <Tooltip
+                                                        contentStyle={{
+                                                            backgroundColor: 'var(--background)',
+                                                            borderRadius: '12px',
+                                                            border: '1px solid var(--border)',
+                                                            fontSize: '11px',
+                                                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.05)',
+                                                            padding: '8px 12px'
+                                                        }}
+                                                        formatter={(value, name) => [
+                                                            `$${parseFloat(value as string).toFixed(2)}`,
+                                                            name === 'price' ? 'Standard Price' : 'Discount Price'
+                                                        ]}
+                                                    />
+                                                    <Area
+                                                        type="monotone"
+                                                        name="price"
+                                                        dataKey="price"
+                                                        stroke="#2b73e0"
+                                                        strokeWidth={2.5}
+                                                        fillOpacity={1}
+                                                        fill="url(#colorComparePrices)"
+                                                        activeDot={{ r: 4, fill: '#2b73e0', stroke: '#fff', strokeWidth: 2 }}
+                                                    />
+                                                    <Area
+                                                        type="monotone"
+                                                        name="discountPrice"
+                                                        dataKey="discountPrice"
+                                                        stroke="#10b981"
+                                                        strokeWidth={2.5}
+                                                        fillOpacity={1}
+                                                        fill="url(#colorCompareDiscount)"
+                                                        activeDot={{ r: 4, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+                                                    />
+                                                </AreaChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
+
                                     {groupByPharmacy ? (
                                         <div className="divide-y divide-border">
                                             {Object.entries(
@@ -420,8 +601,8 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                                     </div>
                                                     <div className="divide-y divide-border/50">
                                                         {items.map((pharm, idx) => (
-                                                            <div 
-                                                                key={idx} 
+                                                            <div
+                                                                key={idx}
                                                                 onClick={() => handlePharmacyClick(pharm.npi)}
                                                                 className="p-6 cursor-pointer hover:bg-muted/20 transition-colors select-none"
                                                             >
@@ -429,7 +610,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                                                     <div>
                                                                         <div className="font-bold text-foreground flex items-center gap-2">
                                                                             {pharm.name}
-                                                                            <a 
+                                                                            <a
                                                                                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharm.name + ' ' + pharm.street1 + ' ' + pharm.city + ' ' + pharm.state + ' ' + pharm.zipCode)}`}
                                                                                 target="_blank"
                                                                                 rel="noopener noreferrer"
@@ -474,15 +655,15 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                             <tbody className="divide-y divide-border">
                                                 {compareResults.map((pharm, idx) => (
                                                     <>
-                                                        <tr 
-                                                            key={idx} 
+                                                        <tr
+                                                            key={idx}
                                                             onClick={() => handlePharmacyClick(pharm.npi)}
                                                             className="hover:bg-muted/30 transition-colors cursor-pointer select-none"
                                                         >
                                                             <td className="p-4 pl-6">
                                                                 <div className="font-bold text-foreground flex items-center gap-2">
                                                                     {pharm.name}
-                                                                    <a 
+                                                                    <a
                                                                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharm.name + ' ' + pharm.street1 + ' ' + pharm.city + ' ' + pharm.state + ' ' + pharm.zipCode)}`}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
@@ -550,83 +731,164 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
 
                 {/* Main Data Table Area */}
                 <div className="bg-card border-0 rounded-2xl shadow-none overflow-hidden flex flex-col">
-                    
-                    {/* Table Header / Filters */}
-                    <div className="p-4 border-b border-border flex flex-col gap-4">
-                        <h2 className="text-2xl font-serif font-bold text-foreground">Top Medications by Savings</h2>
-                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide w-full">
-                            {categories.map((cat, i) => (
-                                <Button 
-                                    key={i} 
-                                    variant={i === 0 ? "default" : "secondary"}
-                                    className={`rounded-full whitespace-nowrap font-medium transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.15)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none ${i === 0 ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                                >
-                                    {cat}
-                                </Button>
-                            ))}
-                            <Button variant="outline" className="rounded-full whitespace-nowrap ml-auto transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.1)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.15)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none">
-                                <Filter className="w-4 h-4 mr-2" /> Filters
-                            </Button>
+
+                    {/* Table Header */}
+                    <div className="p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-muted/10">
+                        <div>
+                            <h2 className="text-2xl font-serif font-bold text-foreground flex items-center gap-2">
+                                <Bell className="w-6 h-6 text-primary" />
+                                Saved Medications & Alerts
+                            </h2>
+                            <p className="text-xs text-muted-foreground mt-1">
+                                Your tracked medications and customized price drop thresholds.
+                            </p>
                         </div>
+                        <Link href="/alarms">
+                            <Button variant="outline" size="sm" className="rounded-full font-bold transition-all duration-200">
+                                <Bell className="w-4 h-4 mr-2" /> Manage All Alerts
+                            </Button>
+                        </Link>
                     </div>
 
                     {/* The CMC Table */}
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="border-b border-border text-sm text-muted-foreground">
-                                    <th className="p-4 font-semibold w-12 text-center">#</th>
-                                    <th className="p-4 font-semibold">Name</th>
-                                    <th className="p-4 font-semibold">Category</th>
-                                    <th className="p-4 font-semibold text-right">Avg Retail Price</th>
-                                    <th className="p-4 font-semibold text-right">Best Price (CA/US)</th>
-                                    <th className="p-4 font-semibold text-right">30d Change</th>
-                                    <th className="p-4 font-semibold text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-border">
-                                {filteredMedications.map((med) => (
-                                    <tr key={med.id} className="hover:bg-muted/50 transition-colors group">
-                                        <td className="p-4 text-center font-bold text-muted-foreground">{med.rank}</td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <Pill className="w-8 h-8 text-primary stroke-[1.5]" />
-                                                <div>
-                                                    <div className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-                                                        {med.name}
-                                                    </div>
-                                                    <div className="text-xs text-muted-foreground uppercase tracking-wider">{med.generic}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            <span className="bg-secondary text-secondary-foreground text-xs font-semibold px-2 py-1 rounded-md">
-                                                {med.category}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-right font-medium text-muted-foreground line-through decoration-muted-foreground/50">
-                                            {med.retail > 0 ? `$${med.retail.toLocaleString()}` : 'N/A'}
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <span className="font-bold text-xl text-foreground">{med.bestPrice > 0 ? `$${med.bestPrice.toLocaleString()}` : 'N/A'}</span>
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <div className={`flex items-center justify-end gap-1 font-bold ${med.change < 0 ? 'text-green-600' : 'text-red-500'}`}>
-                                                {med.change < 0 ? <TrendingDown className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
-                                                {Math.abs(med.change)}%
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            <Link href={`/medications/${med.id}`}>
-                                                <Button size="sm" className="rounded-lg font-bold transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.25)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none">Compare</Button>
-                                            </Link>
-                                        </td>
+                        {alarmsList.length > 0 ? (
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="border-b border-border text-xs text-muted-foreground uppercase tracking-wider bg-muted/5">
+                                        <th className="p-4 font-bold w-12 text-center">#</th>
+                                        <th className="p-4 font-bold">Medication</th>
+                                        <th className="p-4 font-bold text-right">Target Threshold</th>
+                                        <th className="p-4 font-bold text-center">Status</th>
+                                        <th className="p-4 font-bold text-center">Date Added</th>
+                                        <th className="p-4 font-bold text-center">Actions</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {alarmsList.map((alarm, idx) => {
+                                        const formattedDate = new Date(alarm.created_at).toLocaleDateString(undefined, {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                        });
+                                        return (
+                                            <tr key={alarm.id} className="hover:bg-muted/50 transition-colors group">
+                                                <td className="p-4 text-center font-bold text-muted-foreground">{idx + 1}</td>
+                                                <td className="p-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                                            <Pill className="w-4 h-4" />
+                                                        </div>
+                                                        <div className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                                                            {alarm.medication_name}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="p-4 text-right">
+                                                    <span className="font-bold text-base text-foreground">
+                                                        {alarm.last_price ? `$${parseFloat(alarm.last_price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Pending'}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    <span className="inline-flex items-center gap-1.5 font-bold text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 px-2.5 py-0.5 rounded-full">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                        Active Alert
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-center text-sm text-muted-foreground">
+                                                    {formattedDate}
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <Button
+                                                            size="xs"
+                                                            onClick={() => handleCompareForSaved(alarm.medication_name)}
+                                                            className="rounded-full bg-primary hover:bg-primary/95 text-white font-bold px-3 transition-all duration-200"
+                                                        >
+                                                            Compare
+                                                        </Button>
+                                                        <Button
+                                                            size="xs"
+                                                            variant="ghost"
+                                                            onClick={() => handleDeleteAlarm(alarm.id, alarm.medication_name)}
+                                                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full transition-all duration-150 p-1"
+                                                            title="Delete Price Alert"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </Button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div className="p-12 text-center">
+                                <Bell className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                                <h3 className="text-lg font-bold text-foreground mb-1">No Saved Medications</h3>
+                                <p className="text-muted-foreground text-sm max-w-md mx-auto mb-4">
+                                    Search for a medication above and click "Set Price Alert" to begin tracking savings.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
+
+                {/* Price Alarm Modal */}
+                {isAlarmModalOpen && (
+                    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <div className="bg-card border border-border rounded-2xl w-full max-w-md p-6 shadow-xl animate-in fade-in zoom-in duration-200">
+                            <div className="flex items-center justify-between pb-4 border-b border-border/60">
+                                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                                    <Bell className="w-5 h-5 text-primary" />
+                                    Set Price Alert
+                                </h3>
+                                <button 
+                                    onClick={() => setIsAlarmModalOpen(false)}
+                                    className="text-muted-foreground hover:text-foreground transition-colors text-sm font-semibold"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                            <div className="mt-4 space-y-4">
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Enter the price threshold for <strong className="text-foreground">{comparedDrug}</strong>. We'll send an email alert immediately if the price drops below this target.
+                                </p>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Target Threshold Price (USD)</label>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-semibold">$</span>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0.00"
+                                            value={alarmModalThreshold}
+                                            onChange={(e) => setAlarmModalThreshold(e.target.value)}
+                                            className="pl-7 pr-4 py-5 rounded-lg border-border/80 focus-visible:ring-primary focus-visible:ring-1 focus-visible:border-primary shadow-none text-base font-semibold w-full"
+                                            autoFocus
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="mt-6 flex justify-end gap-3">
+                                <Button 
+                                    variant="ghost" 
+                                    onClick={() => setIsAlarmModalOpen(false)}
+                                    className="rounded-full text-xs font-semibold px-4 py-2 hover:bg-muted"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button 
+                                    onClick={handleSaveAlarmFromModal}
+                                    className="rounded-full bg-primary text-white font-bold text-xs px-5 py-2 shadow-sm"
+                                >
+                                    Save Alert
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             </div>
         </>
