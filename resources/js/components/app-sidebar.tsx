@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Bell, Settings, HelpCircle, Sparkles, User, CreditCard } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, FolderGit2, LayoutGrid, Bell, Settings, HelpCircle, Sparkles, User, CreditCard, Users, BarChart, Activity, FileText } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -34,6 +34,34 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Dashboard Overview',
+        href: dashboard(),
+        icon: LayoutGrid,
+    },
+    {
+        title: 'User Management',
+        href: '/admin/users',
+        icon: Users,
+    },
+    {
+        title: 'Platform Statistics',
+        href: '/admin/statistics',
+        icon: BarChart,
+    },
+    {
+        title: 'System Activity',
+        href: '/admin/activity',
+        icon: Activity,
+    },
+    {
+        title: 'Reports',
+        href: '/admin/reports',
+        icon: FileText,
+    },
+];
+
 const settingsNavItems: NavItem[] = [
     {
         title: 'Profile',
@@ -57,6 +85,12 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage().props as any;
+    const isSuperAdmin = auth?.user?.role === 'super_admin';
+
+    const activeNavItems = isSuperAdmin ? adminNavItems : mainNavItems;
+    const navLabel = isSuperAdmin ? "Administration" : "Platform";
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -72,7 +106,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} label="Platform" />
+                <NavMain items={activeNavItems} label={navLabel} />
                 <NavMain items={settingsNavItems} label="Settings" />
             </SidebarContent>
 

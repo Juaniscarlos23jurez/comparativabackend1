@@ -13,8 +13,8 @@ class OnboardingController extends Controller
     {
         $user = auth()->user();
 
-        // If the user already completed the onboarding, send them directly to the dashboard
-        if ($user->onboarding_completed) {
+        // If the user already completed the onboarding or is a super admin, send them directly to the dashboard
+        if ($user->onboarding_completed || $user->role === 'super_admin') {
             return redirect()->route('dashboard');
         }
 
@@ -29,6 +29,7 @@ class OnboardingController extends Controller
         $request->validate([
             'profile_data' => 'required|array',
             'profile_data.insurance' => 'required|string',
+            'profile_data.age_range' => 'nullable|string',
             'profile_data.zip_code' => 'required|string|size:5',
             'profile_data.pharmacy' => 'required|string',
             'profile_data.radius' => 'required|string',

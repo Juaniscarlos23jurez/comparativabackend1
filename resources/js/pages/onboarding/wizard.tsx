@@ -14,6 +14,7 @@ export default function OnboardingWizard() {
     const [loading, setLoading] = useState(false);
     const [answers, setAnswers] = useState({
         insurance: '',
+        age_range: '',
         zip_code: '',
         pharmacy: '',
         radius: '20',
@@ -30,6 +31,8 @@ export default function OnboardingWizard() {
             setStep(3);
         } else if (step === 3) {
             setStep(4);
+        } else if (step === 4) {
+            setStep(5);
         } else {
             // Final step, submit
             setLoading(true);
@@ -56,9 +59,10 @@ export default function OnboardingWizard() {
                             <div className={`h-2 rounded-full flex-1 ${step >= 2 ? 'bg-primary' : 'bg-muted'}`}></div>
                             <div className={`h-2 rounded-full flex-1 ${step >= 3 ? 'bg-primary' : 'bg-muted'}`}></div>
                             <div className={`h-2 rounded-full flex-1 ${step >= 4 ? 'bg-primary' : 'bg-muted'}`}></div>
+                            <div className={`h-2 rounded-full flex-1 ${step >= 5 ? 'bg-primary' : 'bg-muted'}`}></div>
                         </div>
                         <p className="text-muted-foreground text-sm font-semibold uppercase tracking-wider">
-                            Step {step} of 4
+                            Step {step} of 5
                         </p>
                     </div>
 
@@ -110,6 +114,47 @@ export default function OnboardingWizard() {
 
                     {step === 2 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
+                            <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
+                                What is your age group? (Optional)
+                            </h1>
+                            <p className="text-lg text-muted-foreground">
+                                This helps us find age-specific discounts like Medicare or senior savings.
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-4 mt-8">
+                                {['18-34', '35-50', '51-64', '65+'].map(age => (
+                                    <Button
+                                        key={age}
+                                        variant={answers.age_range === age ? 'default' : 'outline'}
+                                        className={`h-16 text-xl font-semibold rounded-2xl ${answers.age_range === age ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-foreground hover:bg-muted'}`}
+                                        onClick={() => setAnswers({ ...answers, age_range: age })}
+                                    >
+                                        {age}
+                                    </Button>
+                                ))}
+                            </div>
+
+                            <div className="flex gap-4 mt-8">
+                                <Button
+                                    variant="outline"
+                                    className="flex-1 h-16 text-xl font-semibold rounded-2xl border-border hover:bg-muted"
+                                    onClick={() => handleNext('age_range', answers.age_range || 'prefer_not_to_say')}
+                                >
+                                    Skip
+                                </Button>
+                                <Button
+                                    className="flex-1 h-16 text-xl font-semibold rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90"
+                                    onClick={() => handleNext('age_range', answers.age_range)}
+                                    disabled={!answers.age_range}
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {step === 3 && (
+                        <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
                             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight flex items-center gap-3">
                                 <MdLocationPin className="text-primary text-5xl shrink-0" />
                                 <div>Where are you located?</div>
@@ -140,7 +185,7 @@ export default function OnboardingWizard() {
                         </div>
                     )}
 
-                    {step === 3 && (
+                    {step === 4 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
                             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
                                 Pharmacy Preferences
@@ -206,7 +251,7 @@ export default function OnboardingWizard() {
                         </div>
                     )}
 
-                    {step === 4 && (
+                    {step === 5 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
                             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
                                 Choose your savings plan
