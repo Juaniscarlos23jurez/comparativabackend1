@@ -128,9 +128,10 @@ class NeedyMedsService
                 Log::info("NeedyMeds Pharmacy Search Result Count: " . count($data));
 
                 // Save results and seed history if needed
-                foreach ($data as $item) {
+                foreach ($data as &$item) {
                     if (!empty($item['npi']) && isset($item['price'])) {
                         $currentPrice = (float) $item['price'];
+                        $item['discount_price'] = round($currentPrice * 0.85, 2);
 
                         $count = \App\Models\PharmacyPriceHistory::where('npi', $item['npi'])
                             ->where('drug_name', $exactDrugName)
