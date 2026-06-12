@@ -1,8 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
+import { Sparkles, Bell, CreditCard, ArrowRight, Search, Heart, ShieldCheck, MapPin, CheckCircle2, Zap, Pill, Info, Camera, Map, Trophy, Users, Bot } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sparkles, Bell, CreditCard, ArrowRight, Search, Heart, ShieldCheck, MapPin, CheckCircle2, Shuffle, Zap, Pill, Info, Camera, Map, TrendingDown, Trophy, Users, Bot } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
 
 export default function Welcome() {
     const [mockCopay, setMockCopay] = useState('180');
@@ -21,7 +21,10 @@ export default function Welcome() {
     const [isLoadingPrices, setIsLoadingPrices] = useState(false);
 
     const handleSearchPharmacies = (drugName: string) => {
-        if (!drugName) return;
+        if (!drugName) {
+return;
+}
+
         setSelectedDrug(drugName);
         setIsLoadingPrices(true);
         fetch('/api/drugs/pharmacies', {
@@ -73,6 +76,7 @@ export default function Welcome() {
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
@@ -172,7 +176,9 @@ export default function Welcome() {
                                         setShowDropdown(true);
                                     }}
                                     onFocus={() => {
-                                        if (apiResults.length > 0) setShowDropdown(true);
+                                        if (apiResults.length > 0) {
+setShowDropdown(true);
+}
                                     }}
                                     className="w-full bg-white border-border/80 rounded-xl h-[54px] pl-12 pr-[120px] text-base text-[#1A1C2E] placeholder:text-[#6A6C7D] focus-visible:ring-[#3A6FA8] focus-visible:ring-2 shadow-sm relative z-0"
                                     placeholder="Search medication name (e.g. Lipitor)..."

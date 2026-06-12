@@ -1,11 +1,11 @@
+import { Head, Link } from '@inertiajs/react';
+import { Search, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell, Trash2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
-import { dashboard } from '@/routes';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, TrendingDown, TrendingUp, Filter, BarChart3, Users, DollarSign, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { dashboard } from '@/routes';
 
 const globalMetrics = [
     { label: 'Medications Tracked', value: '4,021', icon: Stethoscope },
@@ -14,7 +14,6 @@ const globalMetrics = [
     { label: 'GLP-1 Market Dominance', value: '45%', icon: LineChart },
 ];
 
-const categories = ['All Medications', 'Weight Loss (GLP-1)', 'Diabetes', 'Mental Health', 'Autoimmune', 'Cholesterol'];
 
 type Medication = {
     id: string;
@@ -86,6 +85,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
@@ -103,8 +103,12 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
     }, []);
 
     const handleOpenAlarmModal = () => {
-        if (!comparedDrug) return;
+        if (!comparedDrug) {
+return;
+}
+
         const alarmObj = alarmsList.find(a => a.medication_name === comparedDrug);
+
         if (alarmObj && alarmObj.last_price) {
             setAlarmModalThreshold(parseFloat(alarmObj.last_price).toFixed(2));
         } else {
@@ -113,13 +117,16 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                 : null;
             setAlarmModalThreshold(lowestPriceVal ? lowestPriceVal.toFixed(2) : '');
         }
+
         setIsAlarmModalOpen(true);
     };
 
     const handleSaveAlarmFromModal = async () => {
         const thresholdPrice = parseFloat(alarmModalThreshold);
+
         if (isNaN(thresholdPrice) || thresholdPrice <= 0) {
             alert("Please enter a valid price threshold.");
+
             return;
         }
 
@@ -132,15 +139,19 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                 },
                 body: JSON.stringify({ medication_name: comparedDrug, last_price: thresholdPrice })
             });
+
             if (res.ok) {
                 if (!activeAlarms.includes(comparedDrug)) {
                     setActiveAlarms([...activeAlarms, comparedDrug]);
                 }
+
                 // Refresh list
                 const refreshed = await fetch('/api/alarms').then(r => r.json());
+
                 if (Array.isArray(refreshed)) {
                     setAlarmsList(refreshed);
                 }
+
                 setIsAlarmModalOpen(false);
             }
         } catch (err) {
@@ -149,7 +160,10 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
     };
 
     const handleDeleteAlarm = async (id: number, name: string) => {
-        if (!confirm(`Are you sure you want to delete the price alarm for ${name}?`)) return;
+        if (!confirm(`Are you sure you want to delete the price alarm for ${name}?`)) {
+return;
+}
+
         try {
             const res = await fetch(`/api/alarms/${id}`, {
                 method: 'DELETE',
@@ -157,6 +171,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 }
             });
+
             if (res.ok) {
                 setAlarmsList(alarmsList.filter(a => a.id !== id));
                 setActiveAlarms(activeAlarms.filter(aName => aName !== name));
@@ -171,6 +186,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
         setShowDropdown(false);
         setIsComparing(true);
         setComparedDrug(medicationName);
+
         try {
             const res = await fetch('/api/drugs/pharmacies', {
                 method: 'POST',
@@ -189,8 +205,10 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
         }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const filteredMedications = medicationsList.filter((med) => {
         const query = searchQuery.toLowerCase();
+
         return med.name.toLowerCase().includes(query) ||
             med.generic.toLowerCase().includes(query) ||
             med.category.toLowerCase().includes(query);
@@ -200,10 +218,13 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
         if (expandedPharmacy === npi) {
             setExpandedPharmacy(null);
             setPharmacyHistory([]);
+
             return;
         }
+
         setExpandedPharmacy(npi);
         setIsLoadingHistory(true);
+
         try {
             const res = await fetch(`/api/drugs/pharmacy-history?npi=${npi}&drugName=${encodeURIComponent(comparedDrug)}`);
             const data = await res.json();
@@ -216,7 +237,9 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
     };
 
     const renderHistoryChart = (npi: string) => {
-        if (expandedPharmacy !== npi) return null;
+        if (expandedPharmacy !== npi) {
+return null;
+}
 
         return (
             <div className="mt-4 p-4 bg-muted/10 rounded-xl border border-border/60" onClick={(e) => e.stopPropagation()}>
@@ -306,10 +329,14 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
     };
 
     const handleCompare = async () => {
-        if (!searchQuery) return;
+        if (!searchQuery) {
+return;
+}
+
         setShowDropdown(false);
         setIsComparing(true);
         setComparedDrug(searchQuery);
+
         try {
             const res = await fetch('/api/drugs/pharmacies', {
                 method: 'POST',
@@ -349,7 +376,9 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                             setShowDropdown(true);
                         }}
                         onFocus={() => {
-                            if (apiResults.length > 0) setShowDropdown(true);
+                            if (apiResults.length > 0) {
+setShowDropdown(true);
+}
                         }}
                     />
                     <Button
@@ -504,13 +533,16 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                                         const grouped = compareResults.reduce((acc: Record<string, number>, pharm) => {
                                                             const brand = pharm.pharmacy || pharm.name || 'Independent';
                                                             const priceNum = parseFloat(pharm.price);
+
                                                             if (!isNaN(priceNum)) {
                                                                 if (acc[brand] === undefined || priceNum < acc[brand]) {
                                                                     acc[brand] = priceNum;
                                                                 }
                                                             }
+
                                                             return acc;
                                                         }, {});
+
                                                         return Object.entries(grouped).map(([name, price]) => ({
                                                             name: name.replace(/\s+(PHARMACY|PHAR)/i, '').substring(0, 15),
                                                             price: price,
@@ -589,8 +621,13 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                             {Object.entries(
                                                 compareResults.reduce((acc: Record<string, any[]>, pharm) => {
                                                     const brand = pharm.pharmacy || 'Independent / Other';
-                                                    if (!acc[brand]) acc[brand] = [];
+
+                                                    if (!acc[brand]) {
+acc[brand] = [];
+}
+
                                                     acc[brand].push(pharm);
+
                                                     return acc;
                                                 }, {})
                                             ).map(([brand, items]) => (
@@ -771,6 +808,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                                             day: 'numeric',
                                             year: 'numeric'
                                         });
+
                                         return (
                                             <tr key={alarm.id} className="hover:bg-muted/50 transition-colors group">
                                                 <td className="p-4 text-center font-bold text-muted-foreground">{idx + 1}</td>

@@ -1,8 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
+import { ArrowLeft, Bell, MapPin, Plane, TrendingDown, Star, Link as LinkIcon, AlertTriangle } from 'lucide-react';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Bell, Info, MapPin, Plane, TrendingDown, Star, Link as LinkIcon, AlertTriangle } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 type Medication = {
     id: string;
@@ -14,7 +13,7 @@ type Medication = {
     retail: number;
 };
 
-export default function MedicationShow({ medication, auth }: { medication: Medication, auth: any }) {
+export default function MedicationShow({ medication }: { medication: Medication, auth: any }) {
     const name = medication.name;
     const currentPrice = medication.bestPrice;
     const retailPrice = medication.retail;

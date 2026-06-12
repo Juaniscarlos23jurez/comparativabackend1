@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Head, usePage } from '@inertiajs/react';
+import { Bell, Trash2, Mail, Pill, Clock, Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Bell, Trash2, Mail, Pill, Clock, Search, ShieldCheck, MailCheck } from 'lucide-react';
 
 type Alarm = {
     id: number;
@@ -31,7 +31,10 @@ export default function AlarmsIndex() {
     }, []);
 
     const handleRemoveAlarm = async (id: number) => {
-        if (!confirm('Are you sure you want to delete this price alarm?')) return;
+        if (!confirm('Are you sure you want to delete this price alarm?')) {
+return;
+}
+
         try {
             const res = await fetch(`/api/alarms/${id}`, {
                 method: 'DELETE',
@@ -39,6 +42,7 @@ export default function AlarmsIndex() {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 }
             });
+
             if (res.ok) {
                 setAlarms(alarms.filter(a => a.id !== id));
             }

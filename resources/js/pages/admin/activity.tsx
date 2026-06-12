@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { Activity, ShieldAlert, UserPlus, FileEdit, Settings, CreditCard } from 'lucide-react';
+import { ShieldAlert, UserPlus, FileEdit, Settings, CreditCard } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const activities = [
@@ -76,8 +76,9 @@ export default function AdminActivity() {
                     </div>
 
                     <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-border">
-                        {activities.map((activity, index) => {
+                        {activities.map((activity) => {
                             const Icon = activity.icon;
+
                             return (
                                 <div key={activity.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                                     {/* Icon */}

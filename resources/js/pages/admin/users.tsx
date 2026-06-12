@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import { Search, MoreVertical, Shield, User, Filter, Download } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 
 export default function AdminUsers({ users, filters }: any) {
     const [searchTerm, setSearchTerm] = useState(filters?.search || '');

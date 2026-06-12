@@ -1,13 +1,13 @@
-import { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
+import { IconShieldCheck, IconUserHeart } from '@tabler/icons-react';
+import { useState } from 'react';
+import { FaPrescriptionBottleAlt, FaRoute } from 'react-icons/fa';
+import { MdLocalPharmacy, MdLocationPin, MdLocalHospital } from 'react-icons/md';
+import { SiWalmart } from 'react-icons/si';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { IconShieldCheck, IconPill, IconUserHeart } from '@tabler/icons-react';
-import { Spinner } from '@/components/ui/spinner';
 import { Input } from '@/components/ui/input';
-import { MdLocalPharmacy, MdLocationPin, MdLocalHospital } from 'react-icons/md';
-import { FaPrescriptionBottleAlt, FaRoute } from 'react-icons/fa';
-import { SiWalmart } from 'react-icons/si';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function OnboardingWizard() {
     const [step, setStep] = useState(1);

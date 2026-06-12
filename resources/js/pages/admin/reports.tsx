@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { FileText, Download, Calendar, PieChart, Users, DollarSign, Activity } from 'lucide-react';
+import { Download, Calendar, PieChart, Users, DollarSign, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const reports = [
@@ -64,6 +64,7 @@ export default function AdminReports() {
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {reports.map((report) => {
                         const Icon = report.icon;
+
                         return (
                             <div key={report.id} className="bg-card text-card-foreground rounded-xl border border-border shadow-sm flex flex-col hover:shadow-md transition-all group">
                                 <div className="p-6 border-b border-border flex items-start gap-4">

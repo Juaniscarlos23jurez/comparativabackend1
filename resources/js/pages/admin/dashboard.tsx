@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
-import { Users, TrendingUp, Search, DollarSign, ArrowRight, ShieldAlert, UserPlus, CreditCard, Activity } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Users, TrendingUp, Search, DollarSign, ArrowRight, ShieldAlert, UserPlus, Activity } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 export default function AdminDashboard({ stats, recentUsers, recentActivities }: any) {
     // If stats are not passed from backend yet, we use fallbacks

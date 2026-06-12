@@ -1,7 +1,6 @@
 import { Form, Head, router } from '@inertiajs/react';
 import { IconBrandGoogle, IconBrandApple } from '@tabler/icons-react';
 import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
-import { app } from '@/lib/firebase';
 import { useState } from 'react';
 import InputError from '@/components/input-error';
 import PasskeyVerify from '@/components/passkey-verify';
@@ -12,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { app } from '@/lib/firebase';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
@@ -26,9 +26,13 @@ export default function Login({ status, canResetPassword }: Props) {
     const auth = getAuth(app);
 
     const handleGoogleLogin = async () => {
-        if (socialLoading) return;
+        if (socialLoading) {
+return;
+}
+
         setSocialLoading(true);
         const provider = new GoogleAuthProvider();
+
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
@@ -45,9 +49,13 @@ export default function Login({ status, canResetPassword }: Props) {
     };
 
     const handleAppleLogin = async () => {
-        if (socialLoading) return;
+        if (socialLoading) {
+return;
+}
+
         setSocialLoading(true);
         const provider = new OAuthProvider('apple.com');
+
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;

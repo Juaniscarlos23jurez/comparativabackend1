@@ -1,8 +1,8 @@
 import { Head } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import { CreditCard, Check, Sparkles, ChevronLeft } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { CreditCard, Check, Sparkles, ChevronLeft } from 'lucide-react';
-import { Link } from '@inertiajs/react';
 
 export default function Billing() {
     const invoices = [

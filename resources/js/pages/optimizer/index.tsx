@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
 import { Head } from '@inertiajs/react';
+import { Sparkles, Trash2, Search, FileDown, Loader2, MapPin, Navigation, ShoppingBag, HelpCircle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sparkles, Plus, Trash2, Search, FileDown, Loader2, MapPin, Navigation, ShoppingBag, Eye, HelpCircle } from 'lucide-react';
 
 type BasketItem = {
     name: string;
@@ -78,6 +78,7 @@ export default function SavingsOptimizer() {
                 setShowDropdown(false);
             }
         }, 300);
+
         return () => clearTimeout(handler);
     }, [searchQuery]);
 
@@ -89,18 +90,23 @@ export default function SavingsOptimizer() {
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     // Add to prescription basket
     const handleAddToBasket = () => {
-        if (!selectedDrug) return;
+        if (!selectedDrug) {
+return;
+}
+
         const currentPriceNum = parseFloat(currentCopay) || 0;
         const qtyNum = parseInt(quantity) || 30;
 
         // Prevent duplicates
         if (basket.some(item => item.name === selectedDrug)) {
             alert('This medication is already in your basket.');
+
             return;
         }
 
@@ -125,8 +131,12 @@ export default function SavingsOptimizer() {
 
     // Calculate bundle options on the server
     const calculateOptimization = async () => {
-        if (basket.length === 0) return;
+        if (basket.length === 0) {
+return;
+}
+
         setIsCalculating(true);
+
         try {
             const res = await fetch('/api/optimizer/calculate', {
                 method: 'POST',
@@ -152,8 +162,12 @@ export default function SavingsOptimizer() {
 
     // Trigger PDF compilation on backend
     const handleDownloadPdf = async () => {
-        if (!results || basket.length === 0) return;
+        if (!results || basket.length === 0) {
+return;
+}
+
         setIsGeneratingPdf(true);
+
         try {
             const res = await fetch('/api/savings/pdf', {
                 method: 'POST',
