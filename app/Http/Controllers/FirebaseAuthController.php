@@ -15,35 +15,44 @@ class FirebaseAuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'name' => 'required|string',
-            'uid' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'name' => 'required|string',
+                'uid' => 'required|string',
+            ]);
 
-        // Find the user by email or create a new one
-        $user = User::firstOrCreate(
-            ['email' => $request->email],
-            [
-                'name' => $request->name,
-                // Generate a random secure password since they login via social provider
-                'password' => Hash::make(Str::random(32)),
-                // Role defaults to 'user' based on our database schema
-            ]
-        );
+            // Find the user by email or create a new one
+            $user = User::firstOrCreate(
+                ['email' => $request->email],
+                [
+                    'name' => $request->name,
+                    // Generate a random secure password since they login via social provider
+                    'password' => Hash::make(Str::random(32)),
+                    // Role defaults to 'user' based on our database schema
+                ]
+            );
 
-        if (is_null($user->email_verified_at)) {
-            $user->email_verified_at = now();
-            $user->save();
+            if (is_null($user->email_verified_at)) {
+                $user->email_verified_at = now();
+                $user->save();
+            }
+
+            // Log the user into the Laravel session
+            Auth::login($user);
+
+            // Regenerate the session to protect against session fixation
+            $request->session()->regenerate();
+
+            // Redirect to intended route or dashboard
+            return redirect()->intended(route('dashboard', absolute: false));
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error 500 in login',
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
         }
-
-        // Log the user into the Laravel session
-        Auth::login($user);
-
-        // Regenerate the session to protect against session fixation
-        $request->session()->regenerate();
-
-        // Redirect to intended route or dashboard
-        return redirect()->intended(route('dashboard', absolute: false));
     }
 }
