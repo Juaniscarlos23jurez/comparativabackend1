@@ -1,9 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
-import { Users, TrendingUp, Search, DollarSign, ArrowRight, ShieldAlert, UserPlus, CreditCard } from 'lucide-react';
+import { Users, TrendingUp, Search, DollarSign, ArrowRight, ShieldAlert, UserPlus, CreditCard, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-export default function AdminDashboard({ stats, recentUsers }: any) {
+export default function AdminDashboard({ stats, recentUsers, recentActivities }: any) {
     // If stats are not passed from backend yet, we use fallbacks
     const safeStats = stats || {
         totalUsers: 24532,
@@ -108,22 +108,29 @@ export default function AdminDashboard({ stats, recentUsers }: any) {
                         </div>
                         <div className="p-6 flex-1">
                             <div className="space-y-6">
-                                {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="flex items-center justify-between">
+                                {recentUsers?.map((user: any) => (
+                                    <div key={user.id} className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
-                                                U
+                                                {user.name.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
-                                                <p className="font-semibold">Nuevo Usuario {i}</p>
-                                                <p className="text-sm text-muted-foreground">usuario{i}@ejemplo.com</p>
+                                                <p className="font-semibold">{user.name}</p>
+                                                <p className="text-sm text-muted-foreground">{user.email}</p>
                                             </div>
                                         </div>
-                                        <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800">
-                                            Activo
+                                        <Badge variant="outline" className={
+                                            user.onboarding_completed 
+                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800'
+                                            : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800'
+                                        }>
+                                            {user.onboarding_completed ? 'Activo' : 'Pendiente'}
                                         </Badge>
                                     </div>
                                 ))}
+                                {(!recentUsers || recentUsers.length === 0) && (
+                                    <p className="text-sm text-muted-foreground text-center py-4">No hay usuarios recientes.</p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -139,36 +146,37 @@ export default function AdminDashboard({ stats, recentUsers }: any) {
                         <div className="p-6 flex-1">
                             <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
                                 
-                                <div className="relative flex items-start gap-4">
-                                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-card bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shrink-0 relative z-10">
-                                        <UserPlus className="w-4 h-4" />
-                                    </div>
-                                    <div className="pt-2">
-                                        <p className="font-medium">Registro exitoso</p>
-                                        <p className="text-sm text-muted-foreground">Un nuevo usuario se ha registrado en la plataforma.</p>
-                                    </div>
-                                </div>
-
-                                <div className="relative flex items-start gap-4">
-                                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-card bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 shrink-0 relative z-10">
-                                        <CreditCard className="w-4 h-4" />
-                                    </div>
-                                    <div className="pt-2">
-                                        <p className="font-medium">Actualización de Plan</p>
-                                        <p className="text-sm text-muted-foreground">Un usuario mejoró su plan a MedPrice+.</p>
-                                    </div>
-                                </div>
-
-                                <div className="relative flex items-start gap-4">
-                                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-card bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 shrink-0 relative z-10">
-                                        <ShieldAlert className="w-4 h-4" />
-                                    </div>
-                                    <div className="pt-2">
-                                        <p className="font-medium">Alerta de Seguridad</p>
-                                        <p className="text-sm text-muted-foreground">Múltiples intentos de inicio de sesión fallidos.</p>
-                                    </div>
-                                </div>
-
+                                {recentActivities?.map((activity: any) => {
+                                    const isSignup = activity.type === 'user_signup';
+                                    const isAlarm = activity.type === 'price_alarm';
+                                    
+                                    return (
+                                        <div key={activity.id} className="relative flex items-start gap-4">
+                                            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-card shrink-0 relative z-10 
+                                                ${isSignup ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : ''}
+                                                ${isAlarm ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' : ''}
+                                                ${!isSignup && !isAlarm ? 'bg-primary/10 text-primary' : ''}
+                                            `}>
+                                                {isSignup && <UserPlus className="w-4 h-4" />}
+                                                {isAlarm && <ShieldAlert className="w-4 h-4" />}
+                                                {!isSignup && !isAlarm && <Activity className="w-4 h-4" />}
+                                            </div>
+                                            <div className="pt-2">
+                                                <div className="flex items-center justify-between">
+                                                    <p className="font-medium">{activity.title}</p>
+                                                    <time className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md ml-2 whitespace-nowrap">
+                                                        {new Date(activity.created_at).toLocaleDateString()}
+                                                    </time>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground mt-0.5">{activity.description}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                
+                                {(!recentActivities || recentActivities.length === 0) && (
+                                    <p className="text-sm text-muted-foreground text-center py-4">No hay actividad reciente.</p>
+                                )}
                             </div>
                         </div>
                     </div>
