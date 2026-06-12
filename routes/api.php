@@ -14,11 +14,10 @@ Route::get('/user', function (Request $request) {
 // Public API routes
 Route::get('/drugs/search', [DrugController::class, 'search']);
 Route::post('/drugs/pharmacies', [DrugController::class, 'pharmacies']);
+Route::get('/drugs/pharmacy-history', [DrugController::class, 'pharmacyHistory']);
 
 // Protected API routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/drugs/pharmacy-history', [DrugController::class, 'pharmacyHistory']);
-
     Route::get('/alarms', [AlarmController::class, 'index']);
     Route::post('/alarms', [AlarmController::class, 'store']);
     Route::delete('/alarms/{id}', [AlarmController::class, 'destroy']);
