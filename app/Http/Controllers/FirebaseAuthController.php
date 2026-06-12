@@ -32,8 +32,9 @@ class FirebaseAuthController extends Controller
             ]
         );
 
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
+        if (is_null($user->email_verified_at)) {
+            $user->email_verified_at = now();
+            $user->save();
         }
 
         // Log the user into the Laravel session
