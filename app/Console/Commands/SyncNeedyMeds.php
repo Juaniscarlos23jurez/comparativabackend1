@@ -30,8 +30,8 @@ class SyncNeedyMeds extends Command
      */
     private function makePostRequest(string $url, array $params)
     {
-        // Default spacing: 250ms between requests to avoid hitting rate limits
-        usleep(250000); 
+        // Spacing: 1 second between requests to avoid hitting rate limits
+        sleep(1); 
 
         $attempts = 0;
         $maxAttempts = 5;
@@ -42,8 +42,8 @@ class SyncNeedyMeds extends Command
 
                 if ($response->status() === 429) {
                     $attempts++;
-                    $this->comment("Received 429 Rate Limit. Backing off for 6 seconds... (Attempt {$attempts}/{$maxAttempts})");
-                    sleep(6);
+                    $this->comment("Received 429 Rate Limit. Backing off for 20 seconds... (Attempt {$attempts}/{$maxAttempts})");
+                    sleep(20);
                     continue;
                 }
 
@@ -53,8 +53,8 @@ class SyncNeedyMeds extends Command
                 if ($attempts >= $maxAttempts) {
                     throw $e;
                 }
-                $this->error("HTTP Exception: " . $e->getMessage() . ". Retrying in 2 seconds...");
-                sleep(2);
+                $this->error("HTTP Exception: " . $e->getMessage() . ". Retrying in 5 seconds...");
+                sleep(5);
             }
         } while ($attempts < $maxAttempts);
 

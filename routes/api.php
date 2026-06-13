@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\SavingsController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OnboardingController;
 
+use App\Http\Controllers\Api\NeedyMedsController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -22,6 +24,11 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::get('/drugs/search', [DrugController::class, 'search']);
 Route::post('/drugs/pharmacies', [DrugController::class, 'pharmacies']);
 Route::get('/drugs/pharmacy-history', [DrugController::class, 'pharmacyHistory']);
+
+Route::post('/programs', [NeedyMedsController::class, 'programs']);
+Route::post('/coupons', [NeedyMedsController::class, 'coupons']);
+Route::post('/diagnoses', [NeedyMedsController::class, 'diagnoses']);
+Route::post('/clinics', [NeedyMedsController::class, 'clinics']);
 
 // Protected API routes
 Route::middleware('auth:sanctum')->group(function () {
