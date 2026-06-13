@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { 
     MapPin, 
-    Search, 
     Phone, 
     Globe, 
     Clock, 
@@ -60,52 +59,63 @@ export default function ClinicsIndex() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selectedClinic, setSelectedClinic] = useState<Clinic | null>(null);
     const [showFilters, setShowFilters] = useState<boolean>(false);
-
-    const fetchClinics = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch('/api/clinics', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({
-                    postalCode,
-                    radius,
-                    clinicType,
-                    rows,
-                    page: page.toString(),
-                    order,
-                    orderBy,
-                    runSearch: true,
-                    from: "Clinic-context useEffect end search",
-                    chips: []
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data) {
-                    setClinics(data.clinics || []);
-                    setTotalCount(data.count || 0);
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching clinics:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const [searchTrigger, setSearchTrigger] = useState<number>(0);
 
     useEffect(() => {
+        let isMounted = true;
+        const fetchClinics = async () => {
+            setIsLoading(true);
+
+            try {
+                const response = await fetch('/api/clinics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({
+                        postalCode,
+                        radius,
+                        clinicType,
+                        rows,
+                        page: page.toString(),
+                        order,
+                        orderBy,
+                        runSearch: true,
+                        from: "Clinic-context useEffect end search",
+                        chips: []
+                    })
+                });
+
+                if (response.ok && isMounted) {
+                    const data = await response.json();
+
+                    if (data) {
+                        setClinics(data.clinics || []);
+                        setTotalCount(data.count || 0);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching clinics:', error);
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
         fetchClinics();
-    }, [clinicType, page, rows, orderBy, order]);
+
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clinicType, page, rows, orderBy, order, searchTrigger]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setPage(0);
-        fetchClinics();
+        setSearchTrigger(prev => prev + 1);
     };
 
     const totalPages = Math.ceil(totalCount / parseInt(rows));
@@ -134,10 +144,13 @@ export default function ClinicsIndex() {
                             { value: 'mental', label: 'Mental Health', icon: Brain },
                         ].map((tab) => {
                             const IconComponent = tab.icon;
+
                             return (
                                 <button
                                     key={tab.value}
-                                    onClick={() => { setClinicType(tab.value); setPage(0); }}
+                                    onClick={() => {
+ setClinicType(tab.value); setPage(0); 
+}}
                                     className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-semibold text-xs transition-all ${
                                         clinicType === tab.value
                                             ? 'bg-background text-foreground shadow-sm'
@@ -199,7 +212,9 @@ export default function ClinicsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Order By</label>
                                 <select 
                                     value={orderBy} 
-                                    onChange={(e) => { setOrderBy(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrderBy(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="name">Clinic Name</option>
@@ -211,7 +226,9 @@ export default function ClinicsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Direction</label>
                                 <select 
                                     value={order} 
-                                    onChange={(e) => { setOrder(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrder(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="ASC">Ascending (A-Z)</option>
@@ -222,7 +239,9 @@ export default function ClinicsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Limit Results</label>
                                 <select 
                                     value={rows} 
-                                    onChange={(e) => { setRows(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setRows(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="10">10 Clinics</option>

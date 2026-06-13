@@ -4,14 +4,12 @@ import {
     Search, 
     Calendar, 
     Phone, 
-    Globe, 
     SlidersHorizontal, 
     ChevronLeft, 
     ChevronRight, 
     ExternalLink,
     X,
     FileDown,
-    Building2,
     ShieldAlert
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -58,48 +56,59 @@ export default function CouponsIndex() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
     const [showFilters, setShowFilters] = useState<boolean>(false);
-
-    const fetchCoupons = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch('/api/coupons', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({
-                    rows,
-                    page: page.toString(),
-                    order,
-                    orderBy,
-                    from: "coupon-context",
-                    query: searchQuery
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data) {
-                    setCoupons(data.coupons || []);
-                    setTotalCount(data.count || 0);
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching coupons:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const [searchTrigger, setSearchTrigger] = useState<number>(0);
 
     useEffect(() => {
+        let isMounted = true;
+        const fetchCoupons = async () => {
+            setIsLoading(true);
+
+            try {
+                const response = await fetch('/api/coupons', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({
+                        rows,
+                        page: page.toString(),
+                        order,
+                        orderBy,
+                        from: "coupon-context",
+                        query: searchQuery
+                    })
+                });
+
+                if (response.ok && isMounted) {
+                    const data = await response.json();
+
+                    if (data) {
+                        setCoupons(data.coupons || []);
+                        setTotalCount(data.count || 0);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching coupons:', error);
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
         fetchCoupons();
-    }, [page, rows, orderBy, order]);
+
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, rows, orderBy, order, searchTrigger]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setPage(0);
-        fetchCoupons();
+        setSearchTrigger(prev => prev + 1);
     };
 
     const totalPages = Math.ceil(totalCount / parseInt(rows));
@@ -158,7 +167,9 @@ export default function CouponsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Field</label>
                                 <select 
                                     value={orderBy} 
-                                    onChange={(e) => { setOrderBy(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrderBy(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="name">Medication/Coupon Name</option>
@@ -170,7 +181,9 @@ export default function CouponsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Direction</label>
                                 <select 
                                     value={order} 
-                                    onChange={(e) => { setOrder(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrder(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="ASC">Ascending (A-Z)</option>
@@ -181,7 +194,9 @@ export default function CouponsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Display Rows</label>
                                 <select 
                                     value={rows} 
-                                    onChange={(e) => { setRows(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setRows(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="10">10 Coupons</option>

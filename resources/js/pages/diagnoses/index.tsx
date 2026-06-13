@@ -7,7 +7,6 @@ import {
     ChevronRight, 
     X,
     Info,
-    Calendar,
     BookOpen
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -37,58 +36,76 @@ export default function DiagnosesIndex() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selectedDiagnosis, setSelectedDiagnosis] = useState<Diagnosis | null>(null);
     const [showFilters, setShowFilters] = useState<boolean>(false);
-
-    const fetchDiagnoses = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch('/api/diagnoses', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({
-                    page,
-                    rowsPerPage,
-                    order,
-                    orderBy,
-                    name: searchQuery,
-                    from: "DiagnosisContextProviderAutocomplete"
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data) {
-                    setDiagnoses(data.diagnoses || []);
-                    setTotalCount(data.count || 0);
-                }
-            }
-        } catch (error) {
-            console.error('Error fetching diagnoses:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const [searchTrigger, setSearchTrigger] = useState<number>(0);
 
     useEffect(() => {
+        let isMounted = true;
+        const fetchDiagnoses = async () => {
+            setIsLoading(true);
+
+            try {
+                const response = await fetch('/api/diagnoses', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({
+                        page,
+                        rowsPerPage,
+                        order,
+                        orderBy,
+                        name: searchQuery,
+                        from: "DiagnosisContextProviderAutocomplete"
+                    })
+                });
+
+                if (response.ok && isMounted) {
+                    const data = await response.json();
+
+                    if (data) {
+                        setDiagnoses(data.diagnoses || []);
+                        setTotalCount(data.count || 0);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching diagnoses:', error);
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
         fetchDiagnoses();
-    }, [page, rowsPerPage, orderBy, order]);
+
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, rowsPerPage, orderBy, order, searchTrigger]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setPage(0);
-        fetchDiagnoses();
+        setSearchTrigger(prev => prev + 1);
     };
 
     const totalPages = Math.ceil(totalCount / rowsPerPage);
 
     // Clean details text replacing formatting placeholders like ¶
     const cleanDetails = (text?: string) => {
-        if (!text) return "No details available.";
+        if (!text) {
+return "No details available.";
+}
+
         return text.split('¶').map((paragraph, index) => {
             const trimmed = paragraph.trim();
-            if (!trimmed) return null;
+
+            if (!trimmed) {
+return null;
+}
+
             return <p key={index} className="mb-4 leading-relaxed text-muted-foreground">{trimmed}</p>;
         });
     };
@@ -147,7 +164,9 @@ export default function DiagnosesIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Direction</label>
                                 <select 
                                     value={order} 
-                                    onChange={(e) => { setOrder(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrder(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="ASC">Ascending (A-Z)</option>
@@ -158,7 +177,9 @@ export default function DiagnosesIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Field</label>
                                 <select 
                                     value={orderBy} 
-                                    onChange={(e) => { setOrderBy(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrderBy(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="diagnosis.name">Diagnosis Name</option>
@@ -169,7 +190,9 @@ export default function DiagnosesIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Items Per Page</label>
                                 <select 
                                     value={rowsPerPage.toString()} 
-                                    onChange={(e) => { setRowsPerPage(parseInt(e.target.value)); setPage(0); }}
+                                    onChange={(e) => {
+ setRowsPerPage(parseInt(e.target.value)); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="15">15 Diagnoses</option>

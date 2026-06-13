@@ -5,15 +5,11 @@ import {
     MapPin, 
     Phone, 
     Globe, 
-    Info, 
     FileText, 
     SlidersHorizontal, 
     ChevronLeft, 
     ChevronRight, 
-    HelpCircle, 
-    Sparkles, 
     Mail, 
-    Clock, 
     CheckCircle2, 
     X,
     Building2
@@ -71,53 +67,63 @@ export default function ProgramsIndex() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
     const [showFilters, setShowFilters] = useState<boolean>(false);
+    const [searchTrigger, setSearchTrigger] = useState<number>(0);
 
     // Fetch programs from backend proxy
-    const fetchPrograms = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch('/api/programs', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({
-                    isNational,
-                    rows,
-                    page: page.toString(),
-                    order,
-                    orderBy,
-                    type,
-                    runSearch: true,
-                    from: "Search Tab switch",
-                    query: searchQuery // Add custom search query if any
-                })
-            });
+    useEffect(() => {
+        let isMounted = true;
+        const fetchPrograms = async () => {
+            setIsLoading(true);
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data) {
-                    setPrograms(data.programs || []);
-                    setTotalCount(data.count || 0);
+            try {
+                const response = await fetch('/api/programs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({
+                        isNational,
+                        rows,
+                        page: page.toString(),
+                        order,
+                        orderBy,
+                        type,
+                        runSearch: true,
+                        from: "Search Tab switch",
+                        query: searchQuery // Add custom search query if any
+                    })
+                });
+
+                if (response.ok && isMounted) {
+                    const data = await response.json();
+
+                    if (data) {
+                        setPrograms(data.programs || []);
+                        setTotalCount(data.count || 0);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching assistance programs:', error);
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
                 }
             }
-        } catch (error) {
-            console.error('Error fetching assistance programs:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        };
 
-    // Trigger fetch when query parameters change
-    useEffect(() => {
         fetchPrograms();
-    }, [isNational, page, rows, orderBy, order, type]);
+
+        return () => {
+            isMounted = false;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isNational, page, rows, orderBy, order, type, searchTrigger]);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setPage(0);
-        fetchPrograms();
+        setSearchTrigger(prev => prev + 1);
     };
 
     const totalPages = Math.ceil(totalCount / parseInt(rows));
@@ -140,14 +146,18 @@ export default function ProgramsIndex() {
                     <div className="flex items-center gap-2 shrink-0">
                         <Button
                             variant={isNational ? "default" : "outline"}
-                            onClick={() => { setIsNational(true); setPage(0); }}
+                            onClick={() => {
+ setIsNational(true); setPage(0); 
+}}
                             className="rounded-full font-semibold text-xs px-4"
                         >
                             National
                         </Button>
                         <Button
                             variant={!isNational ? "default" : "outline"}
-                            onClick={() => { setIsNational(false); setPage(0); }}
+                            onClick={() => {
+ setIsNational(false); setPage(0); 
+}}
                             className="rounded-full font-semibold text-xs px-4"
                         >
                             State & Local
@@ -193,7 +203,9 @@ export default function ProgramsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Program Type</label>
                                 <select 
                                     value={type} 
-                                    onChange={(e) => { setType(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setType(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="dba">Diagnosis-Based Assistance (DBA)</option>
@@ -205,7 +217,9 @@ export default function ProgramsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Field</label>
                                 <select 
                                     value={orderBy} 
-                                    onChange={(e) => { setOrderBy(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrderBy(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="title">Program Title</option>
@@ -217,7 +231,9 @@ export default function ProgramsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Sort Direction</label>
                                 <select 
                                     value={order} 
-                                    onChange={(e) => { setOrder(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setOrder(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="ASC">Ascending (A-Z)</option>
@@ -228,7 +244,9 @@ export default function ProgramsIndex() {
                                 <label className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider block mb-1.5">Rows Per Page</label>
                                 <select 
                                     value={rows} 
-                                    onChange={(e) => { setRows(e.target.value); setPage(0); }}
+                                    onChange={(e) => {
+ setRows(e.target.value); setPage(0); 
+}}
                                     className="w-full bg-transparent border border-border/80 rounded-lg p-2 text-foreground focus:ring-1 focus:ring-primary"
                                 >
                                     <option value="10">10 Programs</option>
