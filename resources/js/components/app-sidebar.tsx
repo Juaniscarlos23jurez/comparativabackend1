@@ -27,11 +27,7 @@ const mainNavItems: NavItem[] = [
         href: '/alarms',
         icon: Bell,
     },
-    {
-        title: 'Savings Optimizer',
-        href: '/optimizer',
-        icon: Sparkles,
-    },
+
     {
         title: 'Assistance Programs',
         href: '/programs',
