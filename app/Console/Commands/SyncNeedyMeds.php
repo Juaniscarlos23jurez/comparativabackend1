@@ -26,6 +26,42 @@ class SyncNeedyMeds extends Command
     protected $description = 'Sync assistance programs, coupons, diagnoses, and clinics from NeedyMeds API';
 
     /**
+     * Helper to perform POST requests with rate-limiting retries (429) and built-in delay.
+     */
+    private function makePostRequest(string $url, array $params)
+    {
+        // Default spacing: 250ms between requests to avoid hitting rate limits
+        usleep(250000); 
+
+        $attempts = 0;
+        $maxAttempts = 5;
+
+        do {
+            try {
+                $response = Http::post($url, $params);
+
+                if ($response->status() === 429) {
+                    $attempts++;
+                    $this->comment("Received 429 Rate Limit. Backing off for 6 seconds... (Attempt {$attempts}/{$maxAttempts})");
+                    sleep(6);
+                    continue;
+                }
+
+                return $response;
+            } catch (\Exception $e) {
+                $attempts++;
+                if ($attempts >= $maxAttempts) {
+                    throw $e;
+                }
+                $this->error("HTTP Exception: " . $e->getMessage() . ". Retrying in 2 seconds...");
+                sleep(2);
+            }
+        } while ($attempts < $maxAttempts);
+
+        return Http::post($url, $params);
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle()
@@ -60,7 +96,7 @@ class SyncNeedyMeds extends Command
         do {
             $this->comment("Fetching diagnoses page {$page}...");
             try {
-                $response = Http::post('https://api.needymeds.org/diagnoses', [
+                $response = $this->makePostRequest('https://api.needymeds.org/diagnoses', [
                     'page' => $page,
                     'rowsPerPage' => $rowsPerPage,
                     'order' => 'ASC',
@@ -118,7 +154,7 @@ class SyncNeedyMeds extends Command
         do {
             $this->comment("Fetching coupons page {$page}...");
             try {
-                $response = Http::post('https://api.needymeds.org/coupons', [
+                $response = $this->makePostRequest('https://api.needymeds.org/coupons', [
                     'rows' => (string) $rows,
                     'page' => (string) $page,
                     'order' => 'ASC',
@@ -139,7 +175,7 @@ class SyncNeedyMeds extends Command
                     break;
                 }
 
-                foreach ($coupons as $coupon) {
+                foreach ($coupon = $coupons as $coupon) {
                     DiscountCoupon::updateOrCreate(
                         ['id' => $coupon['id']],
                         [
@@ -186,7 +222,7 @@ class SyncNeedyMeds extends Command
         do {
             $this->comment("Fetching programs page {$page}...");
             try {
-                $response = Http::post('https://api.needymeds.org/programs', [
+                $response = $this->makePostRequest('https://api.needymeds.org/programs', [
                     'isNational' => $isNational,
                     'rows' => (string) $rows,
                     'page' => (string) $page,
@@ -262,7 +298,7 @@ class SyncNeedyMeds extends Command
         do {
             $this->comment("Fetching {$type} clinics page {$page}...");
             try {
-                $response = Http::post('https://api.needymeds.org/clinics', [
+                $response = $this->makePostRequest('https://api.needymeds.org/clinics', [
                     'rows' => (string) $rows,
                     'page' => (string) $page,
                     'order' => 'ASC',
