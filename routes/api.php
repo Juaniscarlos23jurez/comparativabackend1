@@ -15,6 +15,8 @@ Route::get('/user', function (Request $request) {
 
 // Auth API routes
 Route::post('/auth/social-login', [AuthController::class, 'socialLogin']);
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
 
 // Public API routes
 Route::get('/drugs/search', [DrugController::class, 'search']);

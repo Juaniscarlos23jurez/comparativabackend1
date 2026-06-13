@@ -56,6 +56,84 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Handle standard registration from mobile app
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'onboarding_completed' => false,
+            ]);
+
+            $token = $user->createToken('MobileAppToken')->plainTextToken;
+
+            return response()->json([
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'onboarding_completed' => false,
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error during registration',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Handle standard login from mobile app
+     */
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'message' => 'Las credenciales proporcionadas son incorrectas.'
+                ], 401);
+            }
+
+            $token = $user->createToken('MobileAppToken')->plainTextToken;
+
+            return response()->json([
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'onboarding_completed' => (bool)$user->onboarding_completed,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error during login',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
     
     /**
      * Handle logout (revoke token)
