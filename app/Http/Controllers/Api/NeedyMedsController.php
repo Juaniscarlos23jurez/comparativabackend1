@@ -41,7 +41,36 @@ class NeedyMedsController extends Controller
         $programs = $dbQuery->orderBy($orderBy, $order)
                             ->offset($page * $rows)
                             ->limit($rows)
-                            ->get();
+                            ->get()
+                            ->map(function ($program) {
+                                return [
+                                    'id' => $program->id,
+                                    'title' => $program->title,
+                                    'type' => ['pap'],
+                                    'isNational' => (bool)$program->is_national,
+                                    'summary' => $program->summary ?? '',
+                                    'providedBy' => $program->provided_by,
+                                    'phone' => $program->phone ?? '',
+                                    'altPhone' => $program->alt_phone ?? '',
+                                    'tty' => $program->tty ?? '',
+                                    'fax' => $program->fax ?? '',
+                                    'email' => $program->email ?? '',
+                                    'programWebsite' => $program->website ?? '',
+                                    'programDetails' => $program->details ?? '',
+                                    'updateDate' => $program->update_date ?? '',
+                                    'languages' => $program->languages ?? [],
+                                    'applications' => $program->applications ?? [],
+                                    'applicationProcess' => $program->application_process ?? [],
+                                    'eligibilityGuidelines' => $program->eligibility_guidelines ?? [],
+                                    'areasOfService' => $program->areas_of_service ?? [],
+                                    'ageGroups' => $program->age_groups ?? [],
+                                    'sponsor' => $program->sponsor ?? '',
+                                    'countiesServed' => $program->counties_served ?? [],
+                                    'address' => $program->address ?? [
+                                        'title' => '', 'attn' => '', 'address' => '', 'address2' => '', 'city' => '', 'state' => '', 'postalCode' => '', 'location' => ['type' => 'Point', 'coordinates' => [0, 0]]
+                                    ],
+                                ];
+                            });
 
         return response()->json([
             'count' => $count,
@@ -77,7 +106,26 @@ class NeedyMedsController extends Controller
         $coupons = $dbQuery->orderBy($orderBy, $order)
                            ->offset($page * $rows)
                            ->limit($rows)
-                           ->get();
+                           ->get()
+                           ->map(function ($coupon) {
+                               return [
+                                   'id' => $coupon->id,
+                                   'name' => $coupon->name,
+                                   'details' => $coupon->details,
+                                   'expirationDate' => $coupon->expiration_date,
+                                   'lastUpdated' => $coupon->last_updated,
+                                   'manufacturerOfferWebsite' => $coupon->manufacturer_offer_website,
+                                   'patientSupportNumber' => $coupon->patient_support_number,
+                                   'pharmacySupportNumber' => $coupon->pharmacy_support_number,
+                                   'printPDF' => $coupon->print_pdf,
+                                   'activateBy' => $coupon->activate_by,
+                                   'category' => $coupon->category,
+                                   'coverageRequirements' => $coupon->coverage_requirements,
+                                   'offerType' => $coupon->offer_type,
+                                   'overTheCounter' => (bool)$coupon->over_the_counter,
+                                   'drugs' => $coupon->drugs ?? [],
+                               ];
+                           });
 
         return response()->json([
             'count' => $count,
@@ -112,7 +160,17 @@ class NeedyMedsController extends Controller
         $diagnoses = $dbQuery->orderBy($orderBy, $order)
                              ->offset($page * $rows)
                              ->limit($rows)
-                             ->get();
+                             ->get()
+                             ->map(function ($diag) {
+                                 return [
+                                     'id' => $diag->id,
+                                     'name' => $diag->name,
+                                     'details' => $diag->details ?? '',
+                                     'createdAt' => $diag->created_at ? $diag->created_at->toISOString() : null,
+                                     'hasDetail' => (bool)$diag->has_detail,
+                                     'lastUpdate' => $diag->last_update ?? '',
+                                 ];
+                             });
 
         return response()->json([
             'count' => $count,
@@ -165,7 +223,31 @@ class NeedyMedsController extends Controller
         $clinics = $dbQuery->orderBy($orderBy, $order)
                            ->offset($page * $rows)
                            ->limit($rows)
-                           ->get();
+                           ->get()
+                           ->map(function ($clinic) {
+                               return [
+                                   'id' => $clinic->id,
+                                   'name' => $clinic->name,
+                                   'address' => $clinic->address ?? '',
+                                   'address2' => $clinic->address2 ?? '',
+                                   'city' => $clinic->city ?? '',
+                                   'state' => $clinic->state ?? '',
+                                   'postalCode' => $clinic->postal_code ?? '',
+                                   'phone' => $clinic->phone ?? '',
+                                   'website' => $clinic->website ?? '',
+                                   'fees' => $clinic->fees ?? '',
+                                   'income' => $clinic->income ?? '',
+                                   'hours' => $clinic->hours ?? '',
+                                   'accepts' => $clinic->accepts ?? [],
+                                   'languagesSpoken' => $clinic->languages_spoken ?? [],
+                                   'serviceArea' => $clinic->service_area ?? [],
+                                   'isDental' => (bool)$clinic->is_dental,
+                                   'isMedical' => (bool)$clinic->is_medical,
+                                   'isMentalHealth' => (bool)$clinic->is_mental_health,
+                                   'isSubstance' => (bool)$clinic->is_substance,
+                                   'location' => $clinic->location ?? ['type' => 'Point', 'coordinates' => [0, 0]],
+                               ];
+                           });
 
         return response()->json([
             'count' => $count,
