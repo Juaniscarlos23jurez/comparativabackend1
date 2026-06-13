@@ -10,3 +10,5 @@ Artisan::command('inspire', function () {
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('alarms:check')->daily();
+Schedule::command('sync:needymeds')->cron('0 0 */3 * *');
+
