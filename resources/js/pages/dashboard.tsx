@@ -422,19 +422,18 @@ setShowDropdown(true);
                         href="https://www.needymeds.org/files/drug-card-print.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block bg-card hover:bg-muted/50 border border-border rounded-xl p-4 transition-all duration-200"
+                        className="group block bg-card hover:bg-muted/50 border border-border rounded-xl p-4 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
                     >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div className="space-y-1">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span className="font-bold text-sm tracking-wide text-foreground uppercase">NeedyMeds Drug Discount Card</span>
-                                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">Save up to 80%</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold text-sm tracking-wide text-foreground uppercase group-hover:text-primary transition-colors">NeedyMeds Drug Discount Card</span>
                                 </div>
-                                <p className="text-xs text-muted-foreground leading-snug">
-                                    Free, no fees or registration. Never expires. Accepted at over 65,000 pharmacies nationwide including all major chains.
+                                <p className="text-xs text-primary/80 group-hover:text-primary font-medium flex items-center gap-1 transition-colors">
+                                    Click here to use or print card <span className="transition-transform group-hover:translate-x-1">→</span>
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3 shrink-0 text-left border-t sm:border-t-0 sm:border-l border-border pt-2 sm:pt-0 sm:pl-4 text-[10px] font-mono text-muted-foreground">
+                            <div className="flex items-center gap-4 shrink-0 text-left border-t sm:border-t-0 sm:border-l border-border pt-3 sm:pt-0 sm:pl-5 text-xs font-mono text-muted-foreground">
                                 <div>
                                     <div><span className="font-semibold text-foreground">BIN:</span> 019520</div>
                                     <div><span className="font-semibold text-foreground">PCN:</span> NMeds</div>

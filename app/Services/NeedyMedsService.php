@@ -180,4 +180,167 @@ class NeedyMedsService
             return [];
         }
     }
+
+    /**
+     * Get assistance programs from NeedyMeds with caching.
+     */
+    public function getPrograms(array $params = [])
+    {
+        $defaultParams = [
+            'isNational' => false,
+            'rows' => "10",
+            'page' => "0",
+            'order' => "ASC",
+            'orderBy' => "title",
+            'type' => "dba",
+            'runSearch' => true,
+            'from' => "Search Tab switch"
+        ];
+
+        $mergedParams = array_merge($defaultParams, $params);
+
+        // Convert boolean values to proper format for request or cache key
+        if (isset($mergedParams['isNational'])) {
+            $mergedParams['isNational'] = filter_var($mergedParams['isNational'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($mergedParams['runSearch'])) {
+            $mergedParams['runSearch'] = filter_var($mergedParams['runSearch'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $cacheKey = "needymeds_programs_" . md5(json_encode($mergedParams));
+
+        return Cache::remember($cacheKey, now()->addHours(24), function () use ($mergedParams) {
+            try {
+                $response = Http::post('https://api.needymeds.org/programs', $mergedParams);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                Log::error('NeedyMeds Programs API Error status ' . $response->status() . ': ' . $response->body());
+                return null;
+            } catch (\Exception $e) {
+                Log::error('NeedyMeds Programs API Exception: ' . $e->getMessage());
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Get diagnoses list from NeedyMeds with caching.
+     */
+    public function getDiagnoses(array $params = [])
+    {
+        $defaultParams = [
+            'page' => 0,
+            'rowsPerPage' => 15,
+            'order' => "ASC",
+            'orderBy' => "diagnosis.name",
+            'name' => "",
+            'from' => "DiagnosisContextProviderAutocomplete"
+        ];
+
+        $mergedParams = array_merge($defaultParams, $params);
+
+        if (isset($mergedParams['page'])) {
+            $mergedParams['page'] = (int) $mergedParams['page'];
+        }
+        if (isset($mergedParams['rowsPerPage'])) {
+            $mergedParams['rowsPerPage'] = (int) $mergedParams['rowsPerPage'];
+        }
+
+        $cacheKey = "needymeds_diagnoses_" . md5(json_encode($mergedParams));
+
+        return Cache::remember($cacheKey, now()->addHours(24), function () use ($mergedParams) {
+            try {
+                $response = Http::post('https://api.needymeds.org/diagnoses', $mergedParams);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                Log::error('NeedyMeds Diagnoses API Error status ' . $response->status() . ': ' . $response->body());
+                return null;
+            } catch (\Exception $e) {
+                Log::error('NeedyMeds Diagnoses API Exception: ' . $e->getMessage());
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Get manufacturer coupons and co-pay cards from NeedyMeds with caching.
+     */
+    public function getCoupons(array $params = [])
+    {
+        $defaultParams = [
+            'rows' => "10",
+            'page' => "0",
+            'order' => "ASC",
+            'orderBy' => "name",
+            'from' => "coupon-context"
+        ];
+
+        $mergedParams = array_merge($defaultParams, $params);
+
+        $cacheKey = "needymeds_coupons_" . md5(json_encode($mergedParams));
+
+        return Cache::remember($cacheKey, now()->addHours(24), function () use ($mergedParams) {
+            try {
+                $response = Http::post('https://api.needymeds.org/coupons', $mergedParams);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                Log::error('NeedyMeds Coupons API Error status ' . $response->status() . ': ' . $response->body());
+                return null;
+            } catch (\Exception $e) {
+                Log::error('NeedyMeds Coupons API Exception: ' . $e->getMessage());
+                return null;
+            }
+        });
+    }
+
+    /**
+     * Get free/low-cost clinics from NeedyMeds with caching.
+     */
+    public function getClinics(array $params = [])
+    {
+        $defaultParams = [
+            'rows' => "10",
+            'page' => "0",
+            'order' => "ASC",
+            'orderBy' => "name",
+            'chips' => [],
+            'clinicType' => "medical",
+            'runSearch' => true,
+            'from' => "Clinic-context useEffect end search"
+        ];
+
+        $mergedParams = array_merge($defaultParams, $params);
+
+        if (isset($mergedParams['runSearch'])) {
+            $mergedParams['runSearch'] = filter_var($mergedParams['runSearch'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $cacheKey = "needymeds_clinics_" . md5(json_encode($mergedParams));
+
+        return Cache::remember($cacheKey, now()->addHours(24), function () use ($mergedParams) {
+            try {
+                $response = Http::post('https://api.needymeds.org/clinics', $mergedParams);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+
+                Log::error('NeedyMeds Clinics API Error status ' . $response->status() . ': ' . $response->body());
+                return null;
+            } catch (\Exception $e) {
+                Log::error('NeedyMeds Clinics API Exception: ' . $e->getMessage());
+                return null;
+            }
+        });
+    }
 }
+

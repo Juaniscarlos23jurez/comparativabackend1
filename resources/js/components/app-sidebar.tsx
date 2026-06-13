@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Bell, HelpCircle, Sparkles, User, CreditCard, Users, BarChart, Activity, FileText } from 'lucide-react';
+import { LayoutGrid, Bell, HelpCircle, Sparkles, User, CreditCard, Users, BarChart, Activity, FileText, HeartHandshake, MapPin } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -31,6 +31,26 @@ const mainNavItems: NavItem[] = [
         title: 'Savings Optimizer',
         href: '/optimizer',
         icon: Sparkles,
+    },
+    {
+        title: 'Assistance Programs',
+        href: '/programs',
+        icon: HeartHandshake,
+    },
+    {
+        title: 'Discount Coupons',
+        href: '/coupons',
+        icon: CreditCard,
+    },
+    {
+        title: 'Diagnoses Directory',
+        href: '/diagnoses',
+        icon: Activity,
+    },
+    {
+        title: 'Clinics Finder',
+        href: '/clinics',
+        icon: MapPin,
     },
 ];
 

@@ -394,6 +394,42 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return $pdf->download('optimized_prescription_plan.pdf');
     });
+
+    Route::get('/programs', function () {
+        return inertia('programs/index');
+    })->name('programs');
+
+    Route::post('/api/programs', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
+        $params = $request->all();
+        return response()->json($needyMedsService->getPrograms($params));
+    });
+
+    Route::get('/coupons', function () {
+        return inertia('coupons/index');
+    })->name('coupons');
+
+    Route::post('/api/coupons', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
+        $params = $request->all();
+        return response()->json($needyMedsService->getCoupons($params));
+    });
+
+    Route::get('/diagnoses', function () {
+        return inertia('diagnoses/index');
+    })->name('diagnoses');
+
+    Route::post('/api/diagnoses', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
+        $params = $request->all();
+        return response()->json($needyMedsService->getDiagnoses($params));
+    });
+
+    Route::get('/clinics', function () {
+        return inertia('clinics/index');
+    })->name('clinics');
+
+    Route::post('/api/clinics', function (\Illuminate\Http\Request $request, \App\Services\NeedyMedsService $needyMedsService) {
+        $params = $request->all();
+        return response()->json($needyMedsService->getClinics($params));
+    });
 });
 
 require __DIR__.'/settings.php';
