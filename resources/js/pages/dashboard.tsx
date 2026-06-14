@@ -199,7 +199,7 @@ return;
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ drugName: medicationName, quantity: quantity, miles: miles, zip: zip })
+                body: JSON.stringify({ drugName: medicationName, quantity: quantity, radius: miles, zip_code: zip })
             });
             const data = await res.json();
             setCompareResults(data);
@@ -349,7 +349,7 @@ return;
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ drugName: searchQuery, quantity: quantity, miles: miles, zip: zip })
+                body: JSON.stringify({ drugName: searchQuery, quantity: quantity, radius: miles, zip_code: zip })
             });
             const data = await res.json();
             setCompareResults(data);
@@ -369,7 +369,7 @@ return;
             <div className="flex h-full flex-1 flex-col gap-8 p-4 md:p-8 max-w-7xl mx-auto w-full">
 
                 {/* Search Bar (Hero) */}
-                <div className="max-w-4xl mx-auto w-full mb-4 flex flex-col md:flex-row gap-2" ref={dropdownRef}>
+                <div className="relative max-w-4xl mx-auto w-full mb-4 flex flex-col md:flex-row gap-2" ref={dropdownRef}>
                     <div className="relative flex-1">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                         <Input
