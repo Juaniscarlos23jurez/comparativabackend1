@@ -33,6 +33,11 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
     const [isSearching, setIsSearching] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
 
+    // Search Parameters
+    const [quantity, setQuantity] = useState('1');
+    const [miles, setMiles] = useState('10');
+    const [zip, setZip] = useState('');
+
     // Compare Modal States
     const [compareResults, setCompareResults] = useState<any[]>([]);
     const [isComparing, setIsComparing] = useState(false);
@@ -194,7 +199,7 @@ return;
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ drugName: medicationName, quantity: '1' })
+                body: JSON.stringify({ drugName: medicationName, quantity: quantity, miles: miles, zip: zip })
             });
             const data = await res.json();
             setCompareResults(data);
@@ -344,7 +349,7 @@ return;
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ drugName: searchQuery, quantity: '1' })
+                body: JSON.stringify({ drugName: searchQuery, quantity: quantity, miles: miles, zip: zip })
             });
             const data = await res.json();
             setCompareResults(data);
@@ -364,29 +369,57 @@ return;
             <div className="flex h-full flex-1 flex-col gap-8 p-4 md:p-8 max-w-7xl mx-auto w-full">
 
                 {/* Search Bar (Hero) */}
-                <div className="relative max-w-3xl mx-auto w-full mb-4" ref={dropdownRef}>
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-6 h-6" />
-                    <Input
-                        type="text"
-                        placeholder="Search for medication (e.g. Lisinopril)..."
-                        className="w-full h-16 pl-14 pr-32 text-xl rounded-full shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setSearchQuery(e.target.value);
-                            setShowDropdown(true);
-                        }}
-                        onFocus={() => {
-                            if (apiResults.length > 0) {
-setShowDropdown(true);
-}
-                        }}
-                    />
-                    <Button
-                        onClick={handleCompare}
-                        className="absolute right-2 top-2 h-12 rounded-full bg-primary px-8 text-lg font-bold transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.25)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
-                    >
-                        Searcher
-                    </Button>
+                <div className="max-w-4xl mx-auto w-full mb-4 flex flex-col md:flex-row gap-2" ref={dropdownRef}>
+                    <div className="relative flex-1">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                        <Input
+                            type="text"
+                            placeholder="Search for medication (e.g. Lisinopril)..."
+                            className="w-full h-14 pl-12 pr-4 text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setShowDropdown(true);
+                            }}
+                            onFocus={() => {
+                                if (apiResults.length > 0) {
+                                    setShowDropdown(true);
+                                }
+                            }}
+                        />
+                    </div>
+                    <div className="flex gap-2 w-full md:w-auto">
+                        <Input
+                            type="number"
+                            placeholder="Qty"
+                            className="w-20 h-14 text-center text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                            title="Quantity"
+                        />
+                        <Input
+                            type="number"
+                            placeholder="Miles"
+                            className="w-24 h-14 text-center text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
+                            value={miles}
+                            onChange={(e) => setMiles(e.target.value)}
+                            title="Radius in Miles"
+                        />
+                        <Input
+                            type="text"
+                            placeholder="ZIP Code"
+                            className="w-32 h-14 text-center text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
+                            value={zip}
+                            onChange={(e) => setZip(e.target.value)}
+                            title="ZIP Code"
+                        />
+                        <Button
+                            onClick={handleCompare}
+                            className="h-14 rounded-xl bg-primary px-8 text-lg font-bold transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.25)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
+                        >
+                            Search
+                        </Button>
+                    </div>
 
                     {/* Autocomplete Dropdown */}
                     {showDropdown && (searchQuery.trim().length > 2) && (
