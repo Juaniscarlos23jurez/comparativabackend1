@@ -148,4 +148,53 @@ class AuthController extends Controller
             'message' => 'Successfully logged out'
         ]);
     }
+
+    /**
+     * Update user profile
+     */
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user = $request->user();
+        $user->name = $request->name;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully',
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * Handle account deletion (permanent delete of user and all related records)
+     */
+    public function deleteAccount(Request $request)
+    {
+        $user = $request->user();
+        
+        try {
+            // Delete user price alarms
+            \App\Models\PriceAlarm::where('user_id', $user->id)->delete();
+            
+            // Revoke all tokens
+            $user->tokens()->delete();
+            
+            // Delete user
+            $user->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Account successfully deleted'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting account',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -1,0 +1,10 @@
+--- routes/api.php
++++ routes/api.php
+@@ -34,6 +34,7 @@
+ Route::middleware('auth:sanctum')->group(function () {
+     Route::post('/auth/logout', [AuthController::class, 'logout']);
+     Route::delete('/user', [AuthController::class, 'deleteAccount']);
++    Route::put('/user/profile', [AuthController::class, 'updateProfile']);
+     Route::post('/onboarding', [OnboardingController::class, 'store']);
+ 
+     Route::get('/alarms', [AlarmController::class, 'index']);

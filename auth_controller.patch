@@ -1,0 +1,29 @@
+--- app/Http/Controllers/Api/AuthController.php
++++ app/Http/Controllers/Api/AuthController.php
+@@ -149,6 +149,27 @@
+         ]);
+     }
+ 
++    /**
++     * Update user profile (name only for now)
++     */
++    public function updateProfile(Request $request)
++    {
++        $request->validate([
++            'name' => 'required|string|max:255',
++        ]);
++
++        $user = $request->user();
++        $user->name = $request->name;
++        $user->save();
++
++        return response()->json([
++            'success' => true,
++            'message' => 'Profile updated successfully',
++            'user' => $user
++        ]);
++    }
++
+     /**
+      * Handle account deletion (permanent delete of user and all related records)
+      */

@@ -33,6 +33,8 @@ Route::post('/clinics', [NeedyMedsController::class, 'clinics']);
 // Protected API routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::delete('/user', [AuthController::class, 'deleteAccount']);
+    Route::put('/user/profile', [AuthController::class, 'updateProfile']);
     Route::post('/onboarding', [OnboardingController::class, 'store']);
 
     Route::get('/alarms', [AlarmController::class, 'index']);
