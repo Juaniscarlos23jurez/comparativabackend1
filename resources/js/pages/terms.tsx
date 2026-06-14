@@ -1,0 +1,159 @@
+import { Head, Link } from '@inertiajs/react';
+import { ShieldCheck, ArrowLeft, Heart, CreditCard, AlertTriangle, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+export default function Terms() {
+    return (
+        <>
+            <Head>
+                <title>MedPrice - Terms and Conditions</title>
+                <meta name="description" content="Read the terms and conditions for using MedPrice. Find out about our drug discount cards and pricing disclaimers." />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            </Head>
+
+            <div className="min-h-screen bg-[#F5F2EC] text-[#1A1C2E] font-sans antialiased pb-12 selection:bg-[#3A6FA8]/20">
+                {/* Header */}
+                <header className="bg-white border-b border-border/40 px-6 py-4 sticky top-0 z-50 flex justify-between items-center">
+                    <div className="text-2xl font-serif font-bold tracking-tight text-[#3A6FA8] flex items-center gap-2">
+                        <ShieldCheck className="w-8 h-8 text-[#3A6FA8]" />
+                        MedPrice
+                    </div>
+
+                    <Link href="/" className="inline-flex items-center gap-2 text-[#6A6C7D] hover:text-[#1A1C2E] font-semibold text-[15px] transition-colors py-2">
+                        <ArrowLeft className="w-4 h-4" />
+                        Back to Home
+                    </Link>
+                </header>
+
+                <main className="max-w-4xl mx-auto px-6 py-12 md:py-16 space-y-8">
+                    {/* Header Intro */}
+                    <div className="space-y-3 text-center md:text-left">
+                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1A1C2E] tracking-tight">
+                            Terms and Conditions
+                        </h1>
+                        <p className="text-base md:text-lg text-[#6A6C7D] font-medium">
+                            Last Updated: June 14, 2026. Please read these terms carefully before using our platform.
+                        </p>
+                    </div>
+
+                    {/* Main Content Card */}
+                    <div className="bg-white rounded-2xl shadow-sm border border-border/40 p-6 md:p-10 space-y-10">
+                        
+                        {/* Critical Disclaimer Callout (US Regulation requirement) */}
+                        <div className="bg-[#B84040]/5 border-l-4 border-[#B84040] p-6 rounded-r-xl space-y-3">
+                            <h2 className="text-lg font-bold text-[#B84040] flex items-center gap-2">
+                                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                                IMPORTANT NOTICE: THIS IS NOT INSURANCE
+                            </h2>
+                            <p className="text-sm text-[#1A1C2E] leading-relaxed">
+                                MedPrice is <strong>NOT</strong> insurance and is <strong>NOT</strong> a substitute for health insurance or government healthcare programs. It does not meet minimum creditable coverage requirements under state or federal laws. The coupons and drug discount cards optimized on MedPrice are <strong>free prescription discount programs</strong>. You are solely responsible for paying the entire cost of the discounted medication at the pharmacy counter.
+                            </p>
+                        </div>
+
+                        {/* Section 1 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                1. Acceptance of Terms
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                By accessing, browsing, or using the MedPrice platform (including our website, services, and search tools), you agree to be bound by these Terms and Conditions and all applicable laws and regulations. If you do not agree to these terms, you are not authorized to use this website.
+                            </p>
+                        </section>
+
+                        {/* Section 2 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                2. No Medical Advice
+                            </h2>
+                            <div className="bg-[#3A6FA8]/5 border-l-4 border-[#3A6FA8] p-5 rounded-r-xl flex gap-3">
+                                <Info className="w-5 h-5 text-[#3A6FA8] flex-shrink-0 mt-0.5" />
+                                <p className="text-sm text-[#1A1C2E] leading-relaxed">
+                                    The contents of the MedPrice platform, including drug pricing, pharmacy listings, dosage comparisons, and alternative therapy suggestions generated by our AI tools, are for <strong>informational purposes only</strong>. We do not provide medical advice, diagnosis, or treatment. Always consult with a licensed doctor or pharmacist before starting, changing, or stopping any medication.
+                                </p>
+                            </div>
+                        </section>
+
+                        {/* Section 3 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                3. Pricing and Coupon Accuracy
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                Drug prices and coupon values fluctuate constantly. While MedPrice makes every effort to provide accurate, real-time pricing estimates using public databases and partners like NeedyMeds, we cannot guarantee that the price shown on your screen will always match the exact checkout price at the pharmacy. The final price is determined solely by the pharmacy at the time of purchase.
+                            </p>
+                        </section>
+
+                        {/* Section 4 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                4. Personal Importation and Canadian Pharmacies
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                MedPrice compares prices of US pharmacies with licensed, certified pharmacies in Canada. Personal importation of prescription drugs into the US is subject to federal regulations under the FDA. It is your responsibility to understand and comply with these requirements, which typically allow a personal supply of up to 90 days for certain medications with a valid US prescription.
+                            </p>
+                        </section>
+
+                        {/* Section 5 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                5. User Account and Permitted Uses
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                If you create a MedPrice account, you must provide accurate information and safeguard your login credentials. The platform is designed for personal, non-commercial use by residents of the United States who are 18 years of age or older. We reserve the right to suspend or terminate accounts that violate platform policies or engage in fraudulent activity.
+                            </p>
+                        </section>
+
+                        {/* Section 6 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                6. Limitation of Liability
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                MedPrice and its affiliates, partners, and data suppliers (including NeedyMeds) are not responsible or liable for any direct, indirect, incidental, or consequential damages resulting from your use or inability to use our platform, or from reliance on any information provided on this website.
+                            </p>
+                        </section>
+
+                        {/* Section 7 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                7. Governing Law
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                These Terms and Conditions and any disputes arising out of or related to your use of MedPrice will be governed by and construed in accordance with the laws of the United States and the State of Delaware, without giving effect to conflict of law principles.
+                            </p>
+                        </section>
+
+                        {/* Section 8 */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-serif font-bold text-[#1A1C2E] border-b border-border/40 pb-2">
+                                8. Contact Information
+                            </h2>
+                            <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
+                                If you have any questions or concerns regarding these Terms and Conditions, please contact us at:
+                            </p>
+                            <div className="bg-[#FAFAFA] rounded-xl p-5 border border-border/40">
+                                <p className="font-bold text-[#1A1C2E]">MedPrice Support Team</p>
+                                <p className="text-sm text-[#6A6C7D] mt-1">Email: support@medprice.com</p>
+                                <p className="text-sm text-[#6A6C7D]">Toll-Free Help Desk: 1-800-555-MEDS (6337)</p>
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* Footer inside page */}
+                    <div className="text-center pt-6 space-y-4">
+                        <div className="flex justify-center gap-1">
+                            <Heart className="w-5 h-5 text-[#3A6FA8] fill-current" />
+                        </div>
+                        <p className="text-xs text-[#6A6C7D]">
+                            © {new Date().getFullYear()} MedPrice. All rights reserved.
+                        </p>
+                        <div className="flex justify-center gap-6 text-xs text-[#3A6FA8] font-semibold">
+                            <Link href="/" className="hover:underline">Home</Link>
+                            <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </>
+    );
+}

@@ -585,9 +585,11 @@ setShowDropdown(true);
                         <div>
                             © {new Date().getFullYear()} MedPrice. All rights reserved.
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-6">
                             <Link href="/login" className="hover:underline">Log In</Link>
                             <Link href="/register" className="hover:underline">Create Account</Link>
+                            <Link href="/terms" className="hover:underline">Terms & Conditions</Link>
+                            <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
                         </div>
                     </div>
                 </footer>

@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Search, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell, Trash2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -28,6 +28,8 @@ type Medication = {
 };
 
 export default function Dashboard({ medicationsList }: { medicationsList: Medication[] }) {
+    const page = usePage();
+    const { auth } = page.props as any;
     const [searchQuery, setSearchQuery] = useState('');
     const [apiResults, setApiResults] = useState<{ id: string, name: string, ndc: string }[]>([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -35,8 +37,7 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
 
     // Search Parameters
     const [quantity, setQuantity] = useState('1');
-    const [miles, setMiles] = useState('10');
-    const [zip, setZip] = useState('');
+    const [miles, setMiles] = useState(auth?.user?.radius?.toString() || '10');
 
     // Compare Modal States
     const [compareResults, setCompareResults] = useState<any[]>([]);
@@ -109,8 +110,8 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
 
     const handleOpenAlarmModal = () => {
         if (!comparedDrug) {
-return;
-}
+            return;
+        }
 
         const alarmObj = alarmsList.find(a => a.medication_name === comparedDrug);
 
@@ -166,8 +167,8 @@ return;
 
     const handleDeleteAlarm = async (id: number, name: string) => {
         if (!confirm(`Are you sure you want to delete the price alarm for ${name}?`)) {
-return;
-}
+            return;
+        }
 
         try {
             const res = await fetch(`/api/alarms/${id}`, {
@@ -192,6 +193,8 @@ return;
         setIsComparing(true);
         setComparedDrug(medicationName);
 
+        const userZip = auth?.user?.zip_code || '88595';
+
         try {
             const res = await fetch('/api/drugs/pharmacies', {
                 method: 'POST',
@@ -199,7 +202,7 @@ return;
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ drugName: medicationName, quantity: quantity, radius: miles, zip_code: zip })
+                body: JSON.stringify({ drugName: medicationName, quantity: quantity, radius: miles, zip_code: userZip })
             });
             const data = await res.json();
             setCompareResults(data);
@@ -243,8 +246,8 @@ return;
 
     const renderHistoryChart = (npi: string) => {
         if (expandedPharmacy !== npi) {
-return null;
-}
+            return null;
+        }
 
         return (
             <div className="mt-4 p-4 bg-muted/10 rounded-xl border border-border/60" onClick={(e) => e.stopPropagation()}>
@@ -335,12 +338,14 @@ return null;
 
     const handleCompare = async () => {
         if (!searchQuery) {
-return;
-}
+            return;
+        }
 
         setShowDropdown(false);
         setIsComparing(true);
         setComparedDrug(searchQuery);
+
+        const userZip = auth?.user?.zip_code || '88595';
 
         try {
             const res = await fetch('/api/drugs/pharmacies', {
@@ -349,7 +354,7 @@ return;
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
-                body: JSON.stringify({ drugName: searchQuery, quantity: quantity, radius: miles, zip_code: zip })
+                body: JSON.stringify({ drugName: searchQuery, quantity: quantity, radius: miles, zip_code: userZip })
             });
             const data = await res.json();
             setCompareResults(data);
@@ -369,56 +374,70 @@ return;
             <div className="flex h-full flex-1 flex-col gap-8 p-4 md:p-8 max-w-7xl mx-auto w-full">
 
                 {/* Search Bar (Hero) */}
-                <div className="relative max-w-4xl mx-auto w-full mb-4 flex flex-col md:flex-row gap-2" ref={dropdownRef}>
-                    <div className="relative flex-1">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                        <Input
-                            type="text"
-                            placeholder="Search for medication (e.g. Lisinopril)..."
-                            className="w-full h-14 pl-12 pr-4 text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
-                            value={searchQuery}
-                            onChange={(e) => {
-                                setSearchQuery(e.target.value);
-                                setShowDropdown(true);
-                            }}
-                            onFocus={() => {
-                                if (apiResults.length > 0) {
+                <div className="relative max-w-4xl mx-auto w-full mb-4 flex flex-col gap-4 bg-card p-5 rounded-2xl border border-border/80 shadow-sm" ref={dropdownRef}>
+                    <div className="flex flex-col md:flex-row gap-3 items-center w-full">
+                        <div className="relative flex-1 w-full">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                            <Input
+                                type="text"
+                                placeholder="Search for medication (e.g. Lisinopril)..."
+                                className="w-full h-14 pl-12 pr-4 text-lg rounded-xl border-border bg-transparent focus-visible:ring-primary focus-visible:ring-1 focus-visible:border-primary shadow-none"
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
                                     setShowDropdown(true);
-                                }
-                            }}
-                        />
-                    </div>
-                    <div className="flex gap-2 w-full md:w-auto">
-                        <Input
-                            type="number"
-                            placeholder="Qty"
-                            className="w-20 h-14 text-center text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
-                            title="Quantity"
-                        />
-                        <Input
-                            type="number"
-                            placeholder="Miles"
-                            className="w-24 h-14 text-center text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
-                            value={miles}
-                            onChange={(e) => setMiles(e.target.value)}
-                            title="Radius in Miles"
-                        />
-                        <Input
-                            type="text"
-                            placeholder="ZIP Code"
-                            className="w-32 h-14 text-center text-lg rounded-xl shadow-sm border-2 border-border bg-card focus-visible:ring-primary"
-                            value={zip}
-                            onChange={(e) => setZip(e.target.value)}
-                            title="ZIP Code"
-                        />
+                                }}
+                                onFocus={() => {
+                                    if (apiResults.length > 0) {
+                                        setShowDropdown(true);
+                                    }
+                                }}
+                            />
+                        </div>
+
+                        {/* Quantity (Numeric Input) */}
+                        <div className="flex items-center gap-2 w-full md:w-32">
+                            <span className="text-sm font-semibold text-muted-foreground shrink-0">Qty:</span>
+                            <Input
+                                type="number"
+                                min="1"
+                                placeholder="Qty"
+                                className="w-full h-14 text-center text-lg rounded-xl border-border bg-transparent focus-visible:ring-primary focus-visible:ring-1 focus-visible:border-primary shadow-none"
+                                value={quantity}
+                                onChange={(e) => setQuantity(e.target.value)}
+                                title="Quantity"
+                            />
+                        </div>
+
                         <Button
                             onClick={handleCompare}
-                            className="h-14 rounded-xl bg-primary px-8 text-lg font-bold transition-all duration-200 shadow-[0_4px_0_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_0_0_rgba(0,0,0,0.25)] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none"
+                            className="h-14 rounded-xl bg-primary px-8 text-lg font-bold transition-all duration-200 shadow-sm hover:bg-primary/95 text-white w-full md:w-auto shrink-0"
                         >
                             Search
                         </Button>
+                    </div>
+
+                    {/* Slider and ZIP indicator info */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pt-3 border-t border-border/50 w-full">
+                        {/* Range (Radius Slider) */}
+                        <div className="flex items-center gap-4 w-full md:max-w-md">
+                            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider shrink-0 w-24">Radius: {miles} mi</span>
+                            <input
+                                type="range"
+                                min="5"
+                                max="150"
+                                step="5"
+                                value={miles}
+                                onChange={(e) => setMiles(e.target.value)}
+                                className="flex-1 h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary focus:outline-none"
+                                title="Search Radius in Miles"
+                            />
+                        </div>
+                        {/* ZIP code display */}
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <span className="font-semibold">Searching in ZIP Code:</span>
+                            <span className="bg-secondary px-2.5 py-0.5 rounded-full font-bold text-foreground">{auth?.user?.zip_code || '88595'}</span>
+                        </div>
                     </div>
 
                     {/* Autocomplete Dropdown */}
@@ -466,16 +485,7 @@ return;
                                     Click here to use or print card <span className="transition-transform group-hover:translate-x-1">→</span>
                                 </p>
                             </div>
-                            <div className="flex items-center gap-4 shrink-0 text-left border-t sm:border-t-0 sm:border-l border-border pt-3 sm:pt-0 sm:pl-5 text-xs font-mono text-muted-foreground">
-                                <div>
-                                    <div><span className="font-semibold text-foreground">BIN:</span> 019520</div>
-                                    <div><span className="font-semibold text-foreground">PCN:</span> NMeds</div>
-                                </div>
-                                <div>
-                                    <div><span className="font-semibold text-foreground">GRP:</span> DRUGCARD</div>
-                                    <div><span className="font-semibold text-foreground">ID:</span> NMNA733663784223</div>
-                                </div>
-                            </div>
+
                         </div>
                     </a>
                 </div>
@@ -655,8 +665,8 @@ return;
                                                     const brand = pharm.pharmacy || 'Independent / Other';
 
                                                     if (!acc[brand]) {
-acc[brand] = [];
-}
+                                                        acc[brand] = [];
+                                                    }
 
                                                     acc[brand].push(pharm);
 

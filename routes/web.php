@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::inertia('/', 'welcome')->name('home');
+Route::inertia('/terms', 'terms')->name('terms');
+Route::inertia('/privacy', 'privacy')->name('privacy');
 
 Route::post('/auth/social-login', [\App\Http\Controllers\FirebaseAuthController::class, 'login'])->name('social.login');
 
