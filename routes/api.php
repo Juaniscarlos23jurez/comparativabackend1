@@ -10,10 +10,14 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OnboardingController;
 
 use App\Http\Controllers\Api\NeedyMedsController;
+use App\Http\Controllers\Api\VersionController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+// Version API route
+Route::get('/version', [VersionController::class, 'index']);
 
 // Auth API routes
 Route::post('/auth/social-login', [AuthController::class, 'socialLogin']);

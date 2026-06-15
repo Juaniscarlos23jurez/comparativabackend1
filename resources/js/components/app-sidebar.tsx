@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Bell, HelpCircle, User, CreditCard, Users, BarChart, Activity, FileText, HeartHandshake, MapPin } from 'lucide-react';
+import { LayoutGrid, Bell, HelpCircle, User, CreditCard, Users, BarChart, Activity, FileText, HeartHandshake, MapPin, Smartphone } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -75,6 +75,11 @@ const adminNavItems: NavItem[] = [
         title: 'Reports',
         href: '/admin/reports',
         icon: FileText,
+    },
+    {
+        title: 'App Version Control',
+        href: '/admin/version',
+        icon: Smartphone,
     },
 ];
 

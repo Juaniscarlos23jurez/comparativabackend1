@@ -19,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/statistics', [\App\Http\Controllers\AdminController::class, 'statistics']);
         Route::get('/activity', [\App\Http\Controllers\AdminController::class, 'activity']);
         Route::get('/reports', [\App\Http\Controllers\AdminController::class, 'reports']);
+        Route::get('/version', [\App\Http\Controllers\AdminController::class, 'version'])->name('admin.version');
+        Route::post('/version', [\App\Http\Controllers\AdminController::class, 'updateVersion'])->name('admin.version.update');
     });
 
     Route::get('dashboard', function (\App\Services\NeedyMedsService $needyMedsService) {
