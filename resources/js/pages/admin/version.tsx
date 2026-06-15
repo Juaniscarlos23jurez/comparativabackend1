@@ -1,12 +1,12 @@
 import { Head, useForm } from '@inertiajs/react';
+import { Smartphone, RefreshCw, AlertTriangle, Link2 } from 'lucide-react';
+import React from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
-import { Smartphone, RefreshCw, AlertTriangle, Link2 } from 'lucide-react';
-import React from 'react';
 
 interface Settings {
     min_version: string;

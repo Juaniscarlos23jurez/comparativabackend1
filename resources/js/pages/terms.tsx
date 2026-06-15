@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ShieldCheck, ArrowLeft, Heart, CreditCard, AlertTriangle, Info } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, Heart, AlertTriangle, Info } from 'lucide-react';
 
 export default function Terms() {
     return (

@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ShieldCheck, ArrowLeft, Heart, EyeOff, Shield, ShieldAlert } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, Heart, Shield } from 'lucide-react';
 
 export default function Privacy() {
     return (

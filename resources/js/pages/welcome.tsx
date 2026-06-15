@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { Sparkles, Bell, CreditCard, ArrowRight, Search, Heart, ShieldCheck, MapPin, CheckCircle2, Zap, Pill, Info, Camera, Map, Trophy, Users, Bot } from 'lucide-react';
+import { Sparkles, Bell, CreditCard, ArrowRight, Search, Heart, MapPin, CheckCircle2, Zap, Pill, Info, Camera, Map, Trophy, Users, Bot } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
