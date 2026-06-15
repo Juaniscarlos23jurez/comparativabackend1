@@ -14,8 +14,8 @@ export default function Privacy() {
             <div className="min-h-screen bg-[#F5F2EC] text-[#1A1C2E] font-sans antialiased pb-12 selection:bg-[#3A6FA8]/20">
                 {/* Header */}
                 <header className="bg-white border-b border-border/40 px-6 py-4 sticky top-0 z-50 flex justify-between items-center">
-                    <div className="text-2xl font-serif font-bold tracking-tight text-[#3A6FA8] flex items-center gap-2">
-                        <ShieldCheck className="w-8 h-8 text-[#3A6FA8]" />
+                    <div className="text-2xl font-serif font-bold tracking-tight text-[#3A6FA8] flex items-center gap-2.5">
+                        <img src="/logo.png" alt="MedPrice Logo" className="w-8 h-8 object-contain rounded-md" />
                         MedPrice
                     </div>
 

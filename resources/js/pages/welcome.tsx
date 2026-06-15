@@ -99,8 +99,8 @@ return;
 
                 {/* Header Navigation */}
                 <header className="bg-white border-b border-border/40 px-6 py-4 sticky top-0 z-50 flex justify-between items-center relative">
-                    <div className="text-2xl font-serif font-bold tracking-tight text-[#3A6FA8] flex items-center gap-2 z-10">
-                        <ShieldCheck className="w-8 h-8 text-[#3A6FA8]" />
+                    <div className="text-2xl font-serif font-bold tracking-tight text-[#3A6FA8] flex items-center gap-2.5 z-10">
+                        <img src="/logo.png" alt="MedPrice Logo" className="w-8 h-8 object-contain rounded-md" />
                         MedPrice
                     </div>
 
@@ -580,7 +580,8 @@ setShowDropdown(true);
                 <footer className="border-t border-border/40 mt-12 bg-white py-12 px-6">
                     <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-[#6A6C7D]">
                         <div className="flex items-center gap-2 font-serif font-bold text-sm text-[#3A6FA8]">
-                            <ShieldCheck className="w-5 h-5" /> MedPrice
+                            <img src="/logo.png" alt="MedPrice Logo" className="w-5 h-5 object-contain rounded-sm" />
+                            MedPrice
                         </div>
                         <div>
                             © {new Date().getFullYear()} MedPrice. All rights reserved.
