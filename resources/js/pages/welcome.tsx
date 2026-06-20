@@ -187,22 +187,15 @@ export default function Welcome() {
     };
 
     // Load initial data
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
     useEffect(() => {
         fetchWelcomePrograms(programQuery);
     }, [isNationalProgram, zipCode]);
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
     useEffect(() => {
         fetchWelcomeCoupons(couponQuery);
     }, []);
-
-    // Auto switch to State programs if a ZIP code is entered
-    useEffect(() => {
-        if (zipCode && zipCode.trim().length > 0) {
-            setIsNationalProgram(false);
-        } else {
-            setIsNationalProgram(true);
-        }
-    }, [zipCode]);
 
     const handleProgramsSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -335,7 +328,15 @@ export default function Welcome() {
                                     type="text"
                                     placeholder="Zip Code"
                                     value={zipCode}
-                                    onChange={e => setZipCode(e.target.value)}
+                                    onChange={e => {
+                                        const val = e.target.value;
+                                        setZipCode(val);
+                                        if (val && val.trim().length > 0) {
+                                            setIsNationalProgram(false);
+                                        } else {
+                                            setIsNationalProgram(true);
+                                        }
+                                    }}
                                     className="w-1/3 bg-white border-2 border-border/80 rounded-xl text-black placeholder:text-gray-500 h-[54px] text-lg font-bold"
                                 />
                                 <select
