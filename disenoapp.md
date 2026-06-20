@@ -1,4 +1,4 @@
-# MedPrice — Design System
+# pricemymeds — Design System
 ## Tercera Edad Edition (Senior-Friendly)
 
 > Diseño minimalista, cálido y accesible pensado para usuarios de 60+ años.
@@ -189,4 +189,4 @@ Caro / EE.UU.   ████  #B84040  Rojo ladrillo
 
 ---
 
-*Versión 1.0 — MedPrice Design System · Tercera Edad Edition*
+*Versión 1.0 — pricemymeds Design System · Tercera Edad Edition*

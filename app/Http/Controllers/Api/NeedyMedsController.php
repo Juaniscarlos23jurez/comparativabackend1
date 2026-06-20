@@ -28,6 +28,15 @@ class NeedyMedsController extends Controller
 
         $dbQuery = AssistanceProgram::where('is_national', $isNational);
 
+        $zipCode = $request->input('zipCode');
+        if (!empty($zipCode)) {
+            $dbQuery->where(function ($q) use ($zipCode) {
+                $q->where('address->postalCode', 'LIKE', "%{$zipCode}%")
+                  ->orWhere('address->state', 'LIKE', "%{$zipCode}%")
+                  ->orWhere('address->city', 'LIKE', "%{$zipCode}%");
+            });
+        }
+
         if (!empty($query)) {
             $dbQuery->where(function ($q) use ($query) {
                 $q->where('title', 'LIKE', "%{$query}%")

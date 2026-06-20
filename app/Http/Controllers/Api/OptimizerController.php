@@ -91,8 +91,8 @@ class OptimizerController extends Controller
                     $price = $allPrices[$medName][$brand]['price'];
                     $fullName = $allPrices[$medName][$brand]['pharmacy_full_name'];
                 } else {
-                    $allMedPrices = collect($allPrices[$medName] ?? [])->pluck('price');
-                    $price = $allMedPrices->isNotEmpty() ? $allMedPrices->avg() : 45.00;
+                    $allpricemymedss = collect($allPrices[$medName] ?? [])->pluck('price');
+                    $price = $allpricemymedss->isNotEmpty() ? $allpricemymedss->avg() : 45.00;
                     $fullName = $brand . " (Est.)";
                     $isComplete = false;
                 }
@@ -134,8 +134,8 @@ class OptimizerController extends Controller
                         $priceB = isset($allPrices[$medName][$brandB]) ? $allPrices[$medName][$brandB]['price'] : null;
                         
                         if ($priceA === null && $priceB === null) {
-                            $allMedPrices = collect($allPrices[$medName] ?? [])->pluck('price');
-                            $price = $allMedPrices->isNotEmpty() ? $allMedPrices->avg() : 45.00;
+                            $allpricemymedss = collect($allPrices[$medName] ?? [])->pluck('price');
+                            $price = $allpricemymedss->isNotEmpty() ? $allpricemymedss->avg() : 45.00;
                             $chosenBrand = $brandA;
                             $fullName = $brandA . " (Est.)";
                         } elseif ($priceA === null) {

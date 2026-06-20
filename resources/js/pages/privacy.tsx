@@ -5,8 +5,8 @@ export default function Privacy() {
     return (
         <>
             <Head>
-                <title>MedPrice - Privacy Policy</title>
-                <meta name="description" content="Read the Privacy Policy for MedPrice. Discover how we protect your health search and personal information." />
+                <title>pricemymeds - Privacy Policy</title>
+                <meta name="description" content="Read the Privacy Policy for pricemymeds. Discover how we protect your health search and personal information." />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             </Head>
 
@@ -14,8 +14,8 @@ export default function Privacy() {
                 {/* Header */}
                 <header className="bg-white border-b border-border/40 px-6 py-4 sticky top-0 z-50 flex justify-between items-center">
                     <div className="text-2xl font-serif font-bold tracking-tight text-[#3A6FA8] flex items-center gap-2.5">
-                        <img src="/logo.png" alt="MedPrice Logo" className="w-8 h-8 object-contain rounded-md" />
-                        MedPrice
+                        <img src="/logo1.png" alt="pricemymeds Logo" className="w-8 h-8 object-contain rounded-md" />
+                        pricemymeds
                     </div>
 
                     <Link href="/" className="inline-flex items-center gap-2 text-[#6A6C7D] hover:text-[#1A1C2E] font-semibold text-[15px] transition-colors py-2">
@@ -37,7 +37,7 @@ export default function Privacy() {
 
                     {/* Main Content Card */}
                     <div className="bg-white rounded-2xl shadow-sm border border-border/40 p-6 md:p-10 space-y-10">
-                        
+
                         {/* Privacy Promise Callout (US compliance) */}
                         <div className="bg-[#2E7D52]/5 border-l-4 border-[#2E7D52] p-6 rounded-r-xl space-y-3">
                             <h2 className="text-lg font-bold text-[#2E7D52] flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function Privacy() {
                                 OUR PRIVACY PROMISE
                             </h2>
                             <p className="text-sm text-[#1A1C2E] leading-relaxed">
-                                At MedPrice, we believe your health search history is personal. <strong>We do NOT sell, rent, or lease your personal information, contact info, or medication search history</strong> to insurance companies, pharmaceutical manufacturers, or third-party marketers. We monetize solely through administrative processing fees from coupon network partners at checkout, at no cost to you.
+                                At pricemymeds, we believe your health search history is personal. <strong>We do NOT sell, rent, or lease your personal information, contact info, or medication search history</strong> to insurance companies, pharmaceutical manufacturers, or third-party marketers. We monetize solely through administrative processing fees from coupon network partners at checkout, at no cost to you.
                             </p>
                         </div>
 
@@ -55,7 +55,7 @@ export default function Privacy() {
                                 1. Information We Collect
                             </h2>
                             <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
-                                When you use MedPrice, we collect information to help optimize your drug savings and provide our services. This includes:
+                                When you use pricemymeds, we collect information to help optimize your drug savings and provide our services. This includes:
                             </p>
                             <ul className="list-disc pl-6 space-y-2 text-[17px] text-[#1A1C2E]/90">
                                 <li><strong>Medication Searches:</strong> The names, dosages, and quantities of medications you search for.</li>
@@ -87,7 +87,7 @@ export default function Privacy() {
                                 3. HIPAA Disclaimer
                             </h2>
                             <p className="text-[17px] leading-relaxed text-[#1A1C2E]/90">
-                                MedPrice is a consumer-facing tool and is <strong>not</strong> a "covered entity" under the Health Insurance Portability and Accountability Act (HIPAA). Therefore, HIPAA regulations do not apply to the data you input. However, we treat your search queries with the highest level of privacy and handle your health-related information with security standards equivalent to corporate compliance protocols.
+                                pricemymeds is a consumer-facing tool and is <strong>not</strong> a "covered entity" under the Health Insurance Portability and Accountability Act (HIPAA). Therefore, HIPAA regulations do not apply to the data you input. However, we treat your search queries with the highest level of privacy and handle your health-related information with security standards equivalent to corporate compliance protocols.
                             </p>
                         </section>
 
@@ -135,8 +135,8 @@ export default function Privacy() {
                                 If you wish to delete your account, access your data, or submit a query regarding our privacy practices, please contact us:
                             </p>
                             <div className="bg-[#FAFAFA] rounded-xl p-5 border border-border/40">
-                                <p className="font-bold text-[#1A1C2E]">MedPrice Privacy Office</p>
-                                <p className="text-sm text-[#6A6C7D] mt-1">Email: privacy@medprice.com</p>
+                                <p className="font-bold text-[#1A1C2E]">pricemymeds Privacy Office</p>
+                                <p className="text-sm text-[#6A6C7D] mt-1">Email: privacy@pricemymeds.com</p>
                                 <p className="text-sm text-[#6A6C7D]">Address: 1209 North Orange Street, Wilmington, DE 19801</p>
                             </div>
                         </section>
@@ -148,7 +148,7 @@ export default function Privacy() {
                             <Heart className="w-5 h-5 text-[#3A6FA8] fill-current" />
                         </div>
                         <p className="text-xs text-[#6A6C7D]">
-                            © {new Date().getFullYear()} MedPrice. All rights reserved.
+                            © {new Date().getFullYear()} pricemymeds. All rights reserved.
                         </p>
                         <div className="flex justify-center gap-6 text-xs text-[#3A6FA8] font-semibold">
                             <Link href="/" className="hover:underline">Home</Link>

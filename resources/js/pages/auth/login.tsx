@@ -27,8 +27,8 @@ export default function Login({ status, canResetPassword }: Props) {
 
     const handleGoogleLogin = async () => {
         if (socialLoading) {
-return;
-}
+            return;
+        }
 
         setSocialLoading(true);
         const provider = new GoogleAuthProvider();
@@ -36,7 +36,7 @@ return;
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            
+
             router.post('/auth/social-login', {
                 email: user.email,
                 name: user.displayName || 'User',
@@ -50,8 +50,8 @@ return;
 
     const handleAppleLogin = async () => {
         if (socialLoading) {
-return;
-}
+            return;
+        }
 
         setSocialLoading(true);
         const provider = new OAuthProvider('apple.com');
@@ -59,7 +59,7 @@ return;
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            
+
             router.post('/auth/social-login', {
                 email: user.email,
                 name: user.displayName || 'User',
@@ -75,7 +75,6 @@ return;
         <>
             <Head title="Log in" />
 
-            <PasskeyVerify />
 
             <Form
                 {...store.form()}
@@ -155,9 +154,9 @@ return;
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <Button 
-                                variant="outline" 
-                                type="button" 
+                            <Button
+                                variant="outline"
+                                type="button"
                                 className="w-full h-12 text-[17px] font-semibold rounded-xl border-border text-foreground hover:bg-muted"
                                 onClick={handleGoogleLogin}
                                 disabled={socialLoading || processing}
@@ -165,9 +164,9 @@ return;
                                 {socialLoading ? <Spinner className="mr-2" /> : <IconBrandGoogle className="mr-2" size={24} />}
                                 Google
                             </Button>
-                            <Button 
-                                variant="outline" 
-                                type="button" 
+                            <Button
+                                variant="outline"
+                                type="button"
                                 className="w-full h-12 text-[17px] font-semibold rounded-xl border-border text-foreground hover:bg-muted"
                                 onClick={handleAppleLogin}
                                 disabled={socialLoading || processing}

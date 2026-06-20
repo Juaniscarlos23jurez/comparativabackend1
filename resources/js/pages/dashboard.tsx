@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Search, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell, Trash2 } from 'lucide-react';
+import { Search, Activity, Pill, Stethoscope, HeartHandshake, Wallet, LineChart, MapPin, Layers, Percent, Bell, Trash2, CreditCard } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Button } from '@/components/ui/button';
@@ -469,23 +469,23 @@ export default function Dashboard({ medicationsList }: { medicationsList: Medica
                 </div>
 
                 {/* NeedyMeds Drug Discount Card Callout */}
-                <div className="max-w-3xl mx-auto w-full">
+                <div className="max-w-xl mx-auto w-full">
                     <a
                         href="https://www.needymeds.org/files/drug-card-print.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group block bg-card hover:bg-muted/50 border border-border rounded-xl p-4 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md"
+                        className="group flex flex-col sm:flex-row sm:items-center gap-5 bg-white border-2 border-[#3A6FA8]/80 hover:border-[#3A6FA8] hover:bg-slate-50 rounded-2xl p-6 transition-all duration-300 cursor-pointer shadow-md hover:shadow-xl"
                     >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-bold text-sm tracking-wide text-foreground uppercase group-hover:text-primary transition-colors">NeedyMeds Drug Discount Card</span>
-                                </div>
-                                <p className="text-xs text-primary/80 group-hover:text-primary font-medium flex items-center gap-1 transition-colors">
-                                    Click here to use or print card <span className="transition-transform group-hover:translate-x-1">→</span>
-                                </p>
+                        <div className="bg-[#3A6FA8]/10 p-4 rounded-full shrink-0 flex items-center justify-center">
+                            <CreditCard className="w-8 h-8 text-[#3A6FA8] group-hover:scale-110 transition-transform duration-300" />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                            <div className="flex items-center gap-2">
+                                <span className="font-extrabold text-xl text-[#3A6FA8] uppercase tracking-wide">NeedyMeds Discount Card</span>
                             </div>
-
+                            <p className="text-base text-black font-semibold flex items-center gap-2 transition-colors">
+                                Click here to use or print card <span className="transition-transform group-hover:translate-x-1 text-[#3A6FA8]">→</span>
+                            </p>
                         </div>
                     </a>
                 </div>

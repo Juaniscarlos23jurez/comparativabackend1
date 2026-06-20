@@ -1,9 +1,8 @@
 import { Head, router } from '@inertiajs/react';
 import { IconShieldCheck, IconUserHeart } from '@tabler/icons-react';
 import { useState } from 'react';
-import { FaPrescriptionBottleAlt, FaRoute } from 'react-icons/fa';
-import { MdLocalPharmacy, MdLocationPin, MdLocalHospital } from 'react-icons/md';
-import { SiWalmart } from 'react-icons/si';
+import { FaRoute } from 'react-icons/fa';
+import { MdLocationPin } from 'react-icons/md';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,7 @@ export default function OnboardingWizard() {
         insurance: '',
         age_range: '',
         zip_code: '',
-        pharmacy: '',
+        pharmacy: 'Any',
         radius: '20',
         plan: '',
     });
@@ -44,12 +43,12 @@ export default function OnboardingWizard() {
 
     return (
         <>
-            <Head title="Welcome to MedPrice" />
+            <Head title="Welcome to pricemymeds" />
 
             <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col">
                 <header className="bg-card border-b border-border px-4 py-4 shadow-sm flex items-center gap-2">
                     <IconShieldCheck size={32} className="text-primary" />
-                    <span className="text-2xl font-serif font-bold tracking-tight text-primary">MedPrice</span>
+                    <span className="text-2xl font-serif font-bold tracking-tight text-primary">pricemymeds</span>
                 </header>
 
                 <main className="flex-1 max-w-xl mx-auto w-full px-4 py-12 md:py-24">
@@ -188,36 +187,13 @@ export default function OnboardingWizard() {
                     {step === 4 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
                             <h1 className="text-3xl md:text-4xl font-serif font-bold text-foreground leading-tight">
-                                Pharmacy Preferences
+                                Search Distance
                             </h1>
                             <p className="text-lg text-muted-foreground">
-                                Tell us your favorite pharmacy and how far you're willing to travel.
+                                Tell us how far you're willing to travel to find the best prices.
                             </p>
 
                             <div className="mt-8 space-y-8">
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                                        <MdLocalPharmacy className="text-primary" /> Preferred Pharmacy
-                                    </h3>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {[
-                                            { name: 'CVS', icon: FaPrescriptionBottleAlt },
-                                            { name: 'Walgreens', icon: MdLocalPharmacy },
-                                            { name: 'Walmart', icon: SiWalmart },
-                                            { name: 'Local Pharmacy', icon: MdLocalHospital }
-                                        ].map(pharma => (
-                                            <Button
-                                                key={pharma.name}
-                                                variant={answers.pharmacy === pharma.name ? 'default' : 'outline'}
-                                                className={`h-auto py-4 flex flex-col items-center gap-2 text-lg rounded-xl ${answers.pharmacy === pharma.name ? 'border-primary bg-primary/10 text-primary' : 'border-border text-foreground'} hover:border-primary/50`}
-                                                onClick={() => setAnswers({ ...answers, pharmacy: pharma.name })}
-                                            >
-                                                <pharma.icon size={28} />
-                                                <span className="text-base font-semibold">{pharma.name}</span>
-                                            </Button>
-                                        ))}
-                                    </div>
-                                </div>
 
                                 <div>
                                     <div className="flex justify-between items-center mb-3">
@@ -243,7 +219,7 @@ export default function OnboardingWizard() {
                                 <Button
                                     className="w-full h-16 text-xl font-semibold rounded-2xl bg-primary text-primary-foreground mt-8 hover:bg-primary/90"
                                     onClick={() => handleNext('radius', answers.radius)}
-                                    disabled={!answers.pharmacy || !answers.radius}
+                                    disabled={!answers.radius}
                                 >
                                     Next
                                 </Button>
@@ -257,7 +233,7 @@ export default function OnboardingWizard() {
                                 Choose your savings plan
                             </h1>
                             <p className="text-lg text-muted-foreground">
-                                Select the MedPrice plan that best fits your needs. You can change this anytime.
+                                Select the pricemymeds plan that best fits your needs. You can change this anytime.
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
@@ -278,7 +254,7 @@ export default function OnboardingWizard() {
                                         Recommended
                                     </div>
                                     <CardContent className="p-6 pt-10">
-                                        <h3 className="text-2xl font-serif font-bold text-primary mb-2">MedPrice+</h3>
+                                        <h3 className="text-2xl font-serif font-bold text-primary mb-2">pricemymeds+</h3>
                                         <div className="text-3xl font-bold text-foreground mb-4">$9.99 <span className="text-lg text-muted-foreground font-normal">/month</span></div>
                                         <ul className="space-y-2 text-[17px] text-foreground font-medium">
                                             <li>• Extra 20% off on generic medications</li>

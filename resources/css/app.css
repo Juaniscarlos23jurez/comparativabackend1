@@ -52,7 +52,7 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
-    /* MedPrice Specific Tokens */
+    /* pricemymeds Specific Tokens */
     --color-savings: var(--savings);
     --color-savings-foreground: var(--savings-foreground);
     --color-us-price: var(--us-price);

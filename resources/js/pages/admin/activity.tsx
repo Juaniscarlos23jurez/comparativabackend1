@@ -37,7 +37,7 @@ const activities = [
         id: 4,
         type: 'billing',
         title: 'Subscription upgraded',
-        description: 'alice@example.com upgraded to MedPrice+ plan.',
+        description: 'alice@example.com upgraded to pricemymeds+ plan.',
         time: '1 day ago',
         icon: CreditCard,
         color: 'text-purple-600',
@@ -85,7 +85,7 @@ export default function AdminActivity() {
                                     <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-background ${activity.bg} ${activity.color} shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm relative z-10`}>
                                         <Icon className="w-4 h-4" />
                                     </div>
-                                    
+
                                     {/* Card */}
                                     <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-border bg-card shadow-sm hover:shadow-md transition-shadow">
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1 gap-2">

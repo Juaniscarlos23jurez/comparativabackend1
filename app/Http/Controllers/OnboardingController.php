@@ -31,7 +31,7 @@ class OnboardingController extends Controller
             'profile_data.insurance' => 'required|string',
             'profile_data.age_range' => 'nullable|string',
             'profile_data.zip_code' => 'required|string|size:5',
-            'profile_data.pharmacy' => 'required|string',
+            'profile_data.pharmacy' => 'nullable|string',
             'profile_data.radius' => 'required|string',
             'profile_data.plan' => 'required|string',
         ]);
