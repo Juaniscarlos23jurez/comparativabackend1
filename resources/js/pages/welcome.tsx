@@ -187,14 +187,16 @@ export default function Welcome() {
     };
 
     // Load initial data
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchWelcomePrograms(programQuery);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNationalProgram, zipCode]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/set-state-in-effect
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchWelcomeCoupons(couponQuery);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleProgramsSearch = (e: React.FormEvent) => {
